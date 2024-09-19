@@ -25,7 +25,9 @@ export const homePage = {
   }
   
   export const explorePage = {
-    twitterLink: () => cy.get('[href="http://www.twitter.com/wix"]')
+    twitterLink: () => cy.get('[href="http://www.twitter.com/wix"]'),
+    title: () => cy.get('#i6ksjvsy > h2'),
+    textBlock: () => cy.get('#i6kvh3dl > p > span')
   }
   
   export const contactPage = {
@@ -33,5 +35,8 @@ export const homePage = {
     emailField: () => cy.get("#input_comp-jxbsa1em"),
     phoneField: () => cy.get("#input_comp-jxbsa1ev"),
     commentField: () => cy.get("#textarea_comp-jxbsa1f7"),
-    submitField: () => cy.get("#comp-jxbsa1fi > button")
+    submitField: () => cy.get("#comp-jxbsa1fi > button"),
+    title: () => cy.get('#i6ly3ckd > h2'),
+    textBlock: () => cy.get('#i6ly3ckc_0'),
+    mapFullscreenButton: () => cy.get('#map_canvas > div > div.gm-style > div:nth-child(8) > button')
   }

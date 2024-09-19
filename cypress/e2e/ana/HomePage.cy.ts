@@ -4,16 +4,6 @@ beforeEach(() => {
     cy.visit("/")
   })
 
-  const getIframeDocument = () => {
-    return homePage.searchWidgetIframe()
-    .its('0.contentDocument').should('exist')
-  }
-
-  const getIframeBody = () => {
-    // get the document
-    return getIframeDocument()
-  }
-
   //navbar buttons
 
   it("Home Button Test", () => {
@@ -93,22 +83,12 @@ beforeEach(() => {
   
   //Search Widget
   it.only("Selector Check In Button Test", () => {
-    //cy.get('div#i6kppi75').should('have.css', 'visibility', 'visible');
-    // homePage.searchWidgetIframe()
-    // .should('be.visible')
-    // .should('not.be.empty')
-    // .then(($iframe) => {
-    //     const $body = $iframe.contents().find('body')
-
-    // cy.wrap($body)
-    //   .find('#check-in')
-    //   .click()
-    // })
-    homePage.searchWidgetIframe()
-    .its('0.contentDocument')
-    .find('.check-in button').click()
-
-
+    cy.visit("https://ancabota09.wixsite.com/intern")
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in')
+    .should('exist').click()
+    .find('#tpapopup-1726744450629_rtby_i6kppi75 > iframe').its('0.contentDocument')
+    .should('exist');
+    // cy.get('iframe.U73P_q[title="tpapopup-1726743680262_rtby_i6kppi75"]').its('0.contentDocument').should('exist');
     
   })
 
