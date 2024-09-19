@@ -4,6 +4,16 @@ beforeEach(() => {
     cy.visit("/")
   })
 
+  const getIframeDocument = () => {
+    return homePage.searchWidgetIframe()
+    .its('0.contentDocument').should('exist')
+  }
+
+  const getIframeBody = () => {
+    // get the document
+    return getIframeDocument()
+  }
+
   //navbar buttons
 
   it("Home Button Test", () => {
@@ -83,16 +93,21 @@ beforeEach(() => {
   
   //Search Widget
   it.only("Selector Check In Button Test", () => {
-    homePage.searchWidgetIframe()
-    .should('be.visible')
-    .should('not.be.empty')
-    .then(($iframe) => {
-        const $body = $iframe.contents().find('body')
+    //cy.get('div#i6kppi75').should('have.css', 'visibility', 'visible');
+    // homePage.searchWidgetIframe()
+    // .should('be.visible')
+    // .should('not.be.empty')
+    // .then(($iframe) => {
+    //     const $body = $iframe.contents().find('body')
 
-    cy.wrap($body)
-      .find('#check-in')
-      .click()
-    })
+    // cy.wrap($body)
+    //   .find('#check-in')
+    //   .click()
+    // })
+    homePage.searchWidgetIframe()
+    .its('0.contentDocument')
+    .find('.check-in button').click()
+
 
     
   })

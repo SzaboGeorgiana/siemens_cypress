@@ -16,7 +16,7 @@ export const homePage = {
     contactMailButton: () => cy.get('#i71ww6nk > p:nth-child(1) > a'),
     //Search Widget
     searchWidgetIframe: () => cy.get('#i6kppi75 > iframe'),
-    calendarCheckInButton: () => cy.get('#check-in'),
+    calendarCheckInButton: () => cy.get('.check-in button'),
 
   }
   
