@@ -1,4 +1,7 @@
 import { homePage } from "../../ui-manager/ana/pages/pages";
+import { selectDateInIframe } from "../../ui-manager/ana/helpers/functions";
+import { formatDateForSearch } from "../../ui-manager/ana/helpers/functions";
+import { navigateMonthsInCalendarIframe } from "../../ui-manager/ana/helpers/functions";
 
 beforeEach(() => {
     cy.visit("/")
@@ -82,15 +85,301 @@ beforeEach(() => {
   })
   
   //Search Widget
-  it.only("Selector Check In Button Test", () => {
-    cy.visit("https://ancabota09.wixsite.com/intern")
+  it("Check In Future Day Test", () => {
+
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 1);
+
     cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in')
-    .should('exist').click()
-    .find('#tpapopup-1726744450629_rtby_i6kppi75 > iframe').its('0.contentDocument')
-    .should('exist');
-    // cy.get('iframe.U73P_q[title="tpapopup-1726743680262_rtby_i6kppi75"]').its('0.contentDocument').should('exist');
-    
+    .should('exist')
+    .click()
+
+    //future date
+    selectDateInIframe(futureDate);
+    const formattedDate = formatDateForSearch(futureDate);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in-value')
+      .should('have.text', (formattedDate));
+
   })
 
+  it("Check In Past Day Test", () => {
+
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - 1);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in')
+    .should('exist')
+    .click()
+
+    //future date
+    selectDateInIframe(pastDate);
+    const formattedDate = formatDateForSearch(pastDate);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in-value')
+      .should('have.text', (formattedDate));
+
+  })
+
+  it("Check In Today Test", () => {
+
+    const today = new Date();
+    today.setDate(today.getDate());
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in')
+    .should('exist')
+    .click()
+
+    //future date
+    selectDateInIframe(today);
+    const formattedDate = formatDateForSearch(today);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in-value')
+      .should('have.text', (formattedDate));
+
+  })
+
+  it("Check In Navigation Test", () => {
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in')
+    .should('exist')
+    .click()
+
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+    const previousMonth = new Date();
+    previousMonth.setMonth(previousMonth.getMonth() - 1);
+
+    //next month
+    navigateMonthsInCalendarIframe('.navigate-right')
+    let expectedText = nextMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+    cy.get('iframe.U73P_q').its('0.contentDocument').find('.title.ng-binding')
+      .should('have.text', (expectedText));
+
+    //previous month
+    navigateMonthsInCalendarIframe('.navigate-left')
+    navigateMonthsInCalendarIframe('.navigate-left')
+    expectedText = previousMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+    cy.get('iframe.U73P_q').its('0.contentDocument').find('.title.ng-binding')
+      .should('have.text', (expectedText));
+  })
+
+  it("Check Out Future Day Test", () => {
+
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 1);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out')
+    .should('exist')
+    .click()
+
+    //future date
+    selectDateInIframe(futureDate);
+    const formattedDate = formatDateForSearch(futureDate);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out-value')
+      .should('have.text', (formattedDate));
+
+  })
+
+  it("Check Out Past Day Test", () => {
+
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - 1);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out')
+    .should('exist')
+    .click()
+
+    selectDateInIframe(pastDate);
+    const formattedDate = formatDateForSearch(pastDate);
+    // cy.get('iframe.U73P_q')
+    //         .its('0.contentDocument')
+    //         .find(`button[aria-label="${formattedDate}"]`)
+    //         .should('exist')
+    //         .should('have.attr', 'disabled');
+      
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out-value')
+      .should('not.have.text', (formattedDate));
+
+  })
+
+  it("Check Out 3 Days Later Test", () => {
+
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 3);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out')
+    .should('exist')
+    .click()
+
+    selectDateInIframe(futureDate);
+    const formattedDate = formatDateForSearch(futureDate);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out-value')
+      .should('have.text', (formattedDate));
+
+  })
+
+  it("Check Out Navigation Test", () => {
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out')
+    .should('exist')
+    .click()
+
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+    const previousMonth = new Date();
+    previousMonth.setMonth(previousMonth.getMonth() - 1);
+
+    //next month
+    navigateMonthsInCalendarIframe('.navigate-right')
+    let expectedText = nextMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+    cy.get('iframe.U73P_q').its('0.contentDocument').find('.title.ng-binding')
+      .should('have.text', (expectedText));
+
+    //previous month
+    navigateMonthsInCalendarIframe('.navigate-left')
+    navigateMonthsInCalendarIframe('.navigate-left')
+    expectedText = previousMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+    cy.get('iframe.U73P_q').its('0.contentDocument').find('.title.ng-binding')
+      .should('have.text', (expectedText));
+  })
+
+  it("Adults Button Test", () => {
+
+    //default number is 1 test
+    let adultsNumber = 1
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > span.value.ng-binding')
+      .should('have.text', (adultsNumber));
+
+    //decrement under 1 test
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > a.down')
+      .click()
+    adultsNumber--
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > span.value.ng-binding')
+      .should('not.have.text', (adultsNumber));
+    adultsNumber = 1
+
+    //increment the adults number test
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > a.up')
+      .click()
+    adultsNumber++
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > span.value.ng-binding')
+      .should('have.text', (adultsNumber));
+    
+    //decrement number back to 1 test
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > a.down')
+      .click()
+    adultsNumber--
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > span.value.ng-binding')
+      .should('have.text', (adultsNumber));
+  })
+
+  it("Kids Button Test", () => {
+
+    //default number is 0 test
+    let kidsNumber = 0
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > span.value.ng-binding')
+      .should('have.text', (kidsNumber));
+
+    //decrement under 0 test
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > a.down')
+      .click()
+    kidsNumber--
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > span.value.ng-binding')
+      .should('not.have.text', (kidsNumber));
+    kidsNumber = 0
+
+    //increment the kids number test
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > a.up')
+      .click()
+    kidsNumber++
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > span.value.ng-binding')
+      .should('have.text', (kidsNumber));
+    
+    //decrement number back to 1 test
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > a.down')
+      .click()
+    kidsNumber--
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > span.value.ng-binding')
+      .should('have.text', (kidsNumber));
+  })
+
+  it.only("Search Button Test", () => {
+
+    //check if search button exists
+    let searchButton = cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget > form > ul > li.search > button')
+    .should('exist')
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in')
+    .should('exist')
+    .click()
+
+    //select today for check in
+    const today = new Date();
+    today.setDate(today.getDate());
+    selectDateInIframe(today);
+    let formattedDate = formatDateForSearch(today);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in-value')
+      .should('have.text', (formattedDate));
+
+    //select a day after 5 days for checkout
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 5);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out')
+    .should('exist')
+    .click()
+
+    selectDateInIframe(futureDate);
+    formattedDate = formatDateForSearch(futureDate);
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out-value')
+      .should('have.text', (formattedDate));
+
+    //number of adults 3
+    let desiredNumberOfAdults = 3;
+    let adultsNumber = 1;
+    //increment the adults number test
+    for (let i = 1; i < desiredNumberOfAdults; i++) {
+      cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > a.up')
+        .click();
+      adultsNumber++;
+    }
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#adults > span.value.ng-binding')
+      .should('have.text', (adultsNumber));
+
+    //number of kids 0
+    let desiredNumberOfKids = 0;
+    let kidsNumber = 0;
+    //increment the adults number test
+    for (let i = 1; i < desiredNumberOfKids; i++) {
+      cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > a.up')
+        .click();
+      kidsNumber++;
+    }
+
+    cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#children > span.value.ng-binding')
+      .should('have.text', (kidsNumber));
+
+    searchButton.click();
+    cy.url().should("contains", "https://ancabota09.wixsite.com/intern/rooms")
+
+  })
 
 
