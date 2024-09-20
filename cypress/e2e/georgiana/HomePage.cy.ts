@@ -1,4 +1,4 @@
-import { homePage } from "../../ui-manager/georgiana/pages/pagesG";
+import { homePage } from "../../ui-manager/georgiana/pages/pages";
 import dayjs from 'dayjs';
 
 

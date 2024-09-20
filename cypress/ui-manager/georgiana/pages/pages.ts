@@ -1,4 +1,28 @@
+
+export const explorePage = {
+  // explorehoteltitle: () => cy.get('#i6ksjvsy'),
+  exploreParagraph: () => cy.get('#i6kvh3dl'),
+  chinatownParagraph: () => cy.get('#i6kv3ge8 > p.wixui-rich-text__text.font_8'),
+  haightandashburyParagraph: () => cy.get('#i6kvbhmb > p.wixui-rich-text__text.font_8'),
+  goldengateParagraph: () => cy.get('#i6kvbkw0 > p.wixui-rich-text__text.font_8'),
+  chinatownImage: () => cy.get('#img_i6kv4ak9 img'),
+  haightAshburyImage: () => cy.get('#img_i6kvbhmc img'),
+  goldenGateImage: () => cy.get('#img_i6kvbkw0_0 img')
+};
+
+export const contactPage = {
+  nameField: () => cy.get("#input_comp-jxbsa1e9"),
+  emailField: () => cy.get("#input_comp-jxbsa1em"),
+  phoneField: () => cy.get("#input_comp-jxbsa1ev"),
+  commentField: () => cy.get("#textarea_comp-jxbsa1f7"),
+  submitField: () => cy.get("#comp-jxbsa1fi > button"),
+  confirmationMessage:()=> cy.get("#comp-jxbsa1fv > p > span"),
+  paragraphElement:()=>cy.get("#i6ly3ckc_0")
+}
+
+
 export const homePage = {
+
     homeAndAwayButton: () => cy.get("#i6ksxrtk > h1 > a"),
     homeButton: () => cy.get("#i6kl732v0label"),
     exploreButton: () => cy.get("#i6kl732v1label"),
@@ -93,10 +117,8 @@ export const homePage = {
     },
 
       // Verifică dacă widgetul de căutare este afișat
-      searchWidgetIsDisplayed:() =>{
-
-        cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in')
-        .should('exist').click()
+    searchWidgetIsDisplayed:() =>{
+      cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in').should('exist').click();
         // .find('#tpapopup-1726744450629_rtby_i6kppi75 > iframe').its('0.contentDocument')
         // .should('exist');
       },
@@ -146,7 +168,12 @@ export const homePage = {
     
       // Încearcă să decrementezi numărul de adulți
       tryToDecrementAdults(targetValue) {
-        cy.get('.adults-counter').invoke('text').then((counterValue) => {
+        // cy.get('.adults-counter').invoke('text').then((counterValue) => 
+          // 
+        cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #adults')
+        .should('exist').invoke('text').then((counterValue) =>
+          
+          {
           while (parseInt(counterValue) > targetValue) {
             this.decrementAdultsButtonDisabled(); // Verifică dacă butonul este dezactivat
             cy.get('.decrement-adults-button').click();
@@ -156,7 +183,7 @@ export const homePage = {
             });
           }
         });
-      },
+      }
     
     //   // Încearcă să incrementezi numărul de adulți
     //   tryToIncrementAdults(targetValue) {
@@ -207,6 +234,7 @@ export const homePage = {
     //     cy.get('.check-out-date').type(checkOutDate);
     //     return checkOutDate;
     //   }
-}
+};
+
     
   
