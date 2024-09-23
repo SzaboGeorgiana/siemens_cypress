@@ -66,8 +66,6 @@ describe("Test Contact Page", () => {
       fieldFunction: null // No validation for valid data
     }
   ];
-  
-
 
   values.forEach(element => {
     it(`Test: ${element.testName}`, () => {
@@ -87,11 +85,12 @@ describe("Test Contact Page", () => {
             const validationMessage = inputField.validationMessage;
             expect(validationMessage).to.equal(element.expectedErrorMessage);
             });
+        } 
+        else 
+        {
+            contactPage.confirmationMessage().should('be.visible')
+            .and('contain.text', 'Thanks for submitting!');
         }
-        // } else {//aici pun thanks for submit luni
-        //     // În cazul în care testul este "ValidData", nu ar trebui să apară mesaje de eroare
-        //     contactPage.errorMessages().should('not.exist');
-        // }
     })
   });
 
@@ -110,6 +109,36 @@ describe("Test Contact Page", () => {
       expect(normalizedParagraph).to.not.equal(expectedText2);
     }); 
   });
+
+  it(`Test Paragraph`, () => {
+
+    contactPage.paragraphElement().should('be.visible')
+    .invoke('text')
+    .then((paragraph) => {
+      const normalizedParagraph = paragraph.replace(/\s+/g, ' ').trim();
+      
+      const expectedText1 = "I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. Feel free to drag and drop me anywhere you like on your page. I’m a great place for you to tell a story and let your users know a little more about you.";
+      const expectedText2 = "I'm a paragraph. Click here to add your own text and edit me. I’m a great place for you to tell a story and let your users know a little more about you.";
+
+      // Verifică dacă paragraful este diferit de expectedText1 și expectedText2
+      expect(normalizedParagraph).to.not.equal(expectedText1);
+      expect(normalizedParagraph).to.not.equal(expectedText2);
+    }); 
+  });
+
+  it('validate that confirmation message is initially hidden', () => {
+    contactPage.confirmationMessage().should('be.visible')
+    .and('not.contain.text', 'Thanks for submitting!');
+    }); 
+
+  it("Map Fullscreen", () => {
+    cy.get('iframe[title="Google Maps"]')
+        .should('have.attr', 'allowfullscreen');
+    cy.get('iframe[title="Google Maps"]').its('0.contentDocument').find('#map_canvas > div > div.gm-style > div:nth-child(8) > button').should('exist').click()
+      .should('have.attr', 'aria-pressed', 'true')    
+
+  });
+
 });
 
 

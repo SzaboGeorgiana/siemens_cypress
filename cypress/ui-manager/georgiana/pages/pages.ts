@@ -1,3 +1,4 @@
+import { formatDateForSearch, selectDateInIframe } from "../helpers/functions";
 
 export const explorePage = {
   // explorehoteltitle: () => cy.get('#i6ksjvsy'),
@@ -35,15 +36,39 @@ export const homePage = {
     pinterestButton: () => cy.get('#i3175p-i6rlbitx > a'),
     wixButton: () => cy.get('#i71wwqnj > p:nth-child(2) > span > a'),
     mailToButton: () => cy.get('[href="mailto:info@mysite.com"]'),
-
-    quickSearchFrame : '#i6kppi75 > .nKphmK',
     
-    searchButton: () => cy.get("button.s-button"),
-    adultsButtonIncr: () => cy.get("#adults > .up"),
-    adultsButtonDecr: () => cy.get("#adults > .down"),
-    childrenButtonIncr: () => cy.get("#children > .up"),
-    childrenButtonDecr: () => cy.get("#children > .down"),
-  
+    iframeSelector:()=>cy.get('.nKphmK'),
+    checkInButton:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#search-widget #check-in'),
+    checkInValue:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#search-widget #check-in-value'),
+    checkOutButton:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#search-widget #check-out'),
+    checkOutValue:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#search-widget #check-out-value'),
+    adultsButtonIncrement:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#adults .up'),
+    adultsButtonDecrement:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#adults .down'),
+    adultValue: () => cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#adults .value'),
+    childrensButtonIncrement:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#children .up'),
+    childrenButtonDecrement:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#children .down'),
+    childrenValue: () => cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#children .value'),
+
     // clickOnHomeAndAwayButton: () => cy.get("#i6ksxrtk > h1 > a").should('be.visible').click(),
     // clickOnHomeButton: () => cy.get("#i6kl732v0label").should('be.visible').click(),
     // clickOnExploreButton: () => cy.get("#i6kl732v1label").should('be.visible').click(),
@@ -56,150 +81,78 @@ export const homePage = {
     // clickOnWixButton: () => cy.get('[href="https://wix.com"]').should('be.visible').click(),
     // clickOnMailToButton: () => cy.get('[href="mailto:info@mysite.com"]').should('be.visible').click(),
 
-
-    // clickOnSearchButton: () => {
-    //   cy.get('iframe').then($iframe => {
-    //     const $body = $iframe.contents().find('body');
-    //     cy.wrap($body).find("button.s-button").should('be.visible').click();
-    //   });
-    // },
-    // clickOnAdultsButtonIncr: () => {
-    //   cy.get('iframe').then($iframe => {
-    //     const $body = $iframe.contents().find('body');
-    //     cy.wrap($body).find("#adults > .up").should('be.visible').click();
-    //   });
-    // },
-    // clickOnAdultsButtonDecr: () => {
-    //   cy.get('iframe').then($iframe => {
-    //     const $body = $iframe.contents().find('body');
-    //     cy.wrap($body).find("#adults > .down").should('be.visible').click();
-    //   });
-    // },
-    // clickOnChildrenButtonIncr: () => {
-    //   cy.get('iframe').then($iframe => {
-    //     const $body = $iframe.contents().find('body');
-    //     cy.wrap($body).find("#children > .up").should('be.visible').click();
-    //   });
-    // },
-    // clickOnChildrenButtonDecr: () => {
-    //   cy.get('iframe').then($iframe => {
-    //     const $body = $iframe.contents().find('body');
-    //     cy.wrap($body).find("#children > .down").should('be.visible').click();
-    //   });
-    // },
-  
-    // isAdultsButtonDecrDisabled: () => {
-    //   cy.get('iframe').then($iframe => {
-    //     const $body = $iframe.contents().find('body');
-    //     cy.wrap($body).find("#adults > .down").should('have.attr', 'disabled');
-    //   });
-    // },
-  
-    // isChildrenButtonDecrDisabled: () => {
-    //   cy.get('iframe').then($iframe => {
-    //     const $body = $iframe.contents().find('body');
-    //     cy.wrap($body).find("#children > .down").should('have.attr', 'disabled');
-    //   });
-    // },
-  
-    // checkInDateIsDisabled: (date) => {
-    //   const formattedDate = date.format('d, EEEE MMMM yyyy');
-    //   cy.get('iframe').then($iframe => {
-    //     const $body = $iframe.contents().find('body');
-    //     cy.wrap($body).find(`button[aria-label="${formattedDate}"]`).should('have.attr', 'disabled');
-    //   });
-    // },
-
-
-    // de aici in jos
     getButtonColor: (buttonElement) => {
       return buttonElement.invoke('css', 'color');  // Returns the color property
     },
 
       // Verifică dacă widgetul de căutare este afișat
-    searchWidgetIsDisplayed:() =>{
-      cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in').should('exist').click();
-        // .find('#tpapopup-1726744450629_rtby_i6kppi75 > iframe').its('0.contentDocument')
-        // .should('exist');
+    setDataInCalendar:(checkInDate, checkOutDate) =>{
+      // checkOutDate.setDate(todayDate.getDate() + 3); 
+
+      homePage.checkInButton()
+        .should('exist')
+        .click();
+  
+      selectDateInIframe(checkInDate);
+  
+      const formattedCheckinDate = formatDateForSearch(checkInDate);
+      homePage.checkInValue()
+        .should('have.text', formattedCheckinDate);
+  
+      homePage.checkOutButton()
+        .should('exist')
+        .click();
+  
+      selectDateInIframe(checkOutDate);
+  
+      const formattedCheckoutDate = formatDateForSearch(checkOutDate);
+      homePage.checkOutValue()
+        .should('have.text', formattedCheckoutDate);
+    },
+
+
+      tryToIncrement: (clicks) => {
+        homePage.adultValue().invoke('text').then((currentValue) => {
+          let currentVal = parseInt(currentValue); // Convertește valoarea la număr      
+          const clickUntilMatch = () => {
+            if (currentVal !== clicks) {
+              homePage.adultsButtonIncrement()
+                .should('be.visible')
+                .click()
+                .then(() => {
+                  homePage.adultValue().invoke('text').then((newVal) => {
+                    currentVal = parseInt(newVal); // Actualizăm valoarea curentă
+                    clickUntilMatch();
+                  });
+                });
+            }
+          };
+          clickUntilMatch();
+        });
       },
-    
-    //   // Verifică dacă calendarul este afișat
-    //   calendarIsDisplayed() {
-    //     cy.get('.calendar').should('be.visible');
-    //   },
-    
-    //   // Verifică dacă frame-ul de check-out este afișat
-    //   checkOutFrameIsDisplayed() {
-    //     cy.get('.check-out-frame').should('be.visible');
-    //   },
-    
-    //   // Verifică dacă butonul de clear este afișat
-    //   clearIsDisplayed() {
-    //     cy.get('iframe').then(($iframe) => {
-    //       const $body = $iframe.contents().find('body');
-    //       cy.wrap($body).find('.clear-button').should('be.visible');
-    //     });
-    //   },
-    
-    //   // Verifică dacă butonul pentru luna următoare este afișat
-    //   nextMonthButtonIsDisplayed() {
-    //     cy.get('.next-month-button').should('be.visible');
-    //   },
-    
-    //   // Verifică dacă butonul pentru luna precedentă este afișat
-    //   previousMonthButtonIsDisplayed() {
-    //     cy.get('.previous-month-button').should('be.visible');
-    //   },
-    
-      // Verifică dacă butonul de decrementare a adulților este dezactivat
-      decrementAdultsButtonDisabled() {
-        cy.get('.decrement-adults-button').should('be.disabled');
-      },
-    
-    //   // Verifică dacă butonul de incrementare a adulților este dezactivat
-    //   incrementAdultsButtonDisabled() {
-    //     cy.get('.increment-adults-button').should('be.disabled');
-    //   },
-    
-    //   // Verifică dacă butonul de incrementare a copiilor este dezactivat
-    //   incrementKidsButtonDisabled() {
-    //     cy.get('.increment-kids-button').should('be.disabled');
-    //   },
-    
-      // Încearcă să decrementezi numărul de adulți
-      tryToDecrementAdults(targetValue) {
-        // cy.get('.adults-counter').invoke('text').then((counterValue) => 
-          // 
-        cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #adults')
-        .should('exist').invoke('text').then((counterValue) =>
-          
-          {
-          while (parseInt(counterValue) > targetValue) {
-            this.decrementAdultsButtonDisabled(); // Verifică dacă butonul este dezactivat
-            cy.get('.decrement-adults-button').click();
-            cy.get('.adults-counter').invoke('text').then((newValue) => {
-              counterValue = newValue;
-              cy.log('Counter value after decrement: ' + counterValue);
-            });
-          }
+      
+
+      tryToDecrement:(clicks) => {
+        homePage.adultValue().invoke('text').then((currentValue) => {
+          let currentVal = parseInt(currentValue); // Convertește valoarea la număr
+          const clickUntilMatch = () => {
+            if (currentVal !== clicks) {
+              homePage.adultsButtonDecrement()
+                .should('be.visible')
+                .click()
+                .then(() => {
+                  homePage.adultValue().invoke('text').then((newVal) => {
+                    currentVal = parseInt(newVal); // Actualizăm valoarea curentă
+                    clickUntilMatch();
+                  });
+                });
+            }
+          };
+          clickUntilMatch();
         });
       }
-    
-    //   // Încearcă să incrementezi numărul de adulți
-    //   tryToIncrementAdults(targetValue) {
-    //     cy.get('.adults-counter').invoke('text').then((counterValue) => {
-    //       while (parseInt(counterValue) < targetValue) {
-    //         this.incrementAdultsButtonDisabled(); // Verifică dacă butonul este dezactivat
-    //         cy.get('.increment-adults-button').click();
-    //         cy.get('.adults-counter').invoke('text').then((newValue) => {
-    //           counterValue = newValue;
-    //           cy.log('Counter value after increment: ' + counterValue);
-    //         });
-    //       }
-    //     });
-    //   },
-    
-    //   // Încearcă să incrementezi numărul de copii
+
+  
     //   tryToIncrementKids(targetValue) {
     //     cy.get('.kids-counter').invoke('text').then((counterValue) => {
     //       while (parseInt(counterValue) < targetValue) {
@@ -212,28 +165,6 @@ export const homePage = {
     //       }
     //     });
     //   },
-    
-    //   // Setează data de check-in
-    //   setCheckInDate(checkInDate) {
-    //     cy.get('.check-in-button').click();
-    //     cy.get('.calendar').should('be.visible');
-    //     cy.get('.check-in-date').type(checkInDate);
-    //     return checkInDate;
-    //   },
-    
-    //   // Setează data de check-out
-    //   setCheckOutDate(checkOutDate, monthsDifference, isSameMonth) {
-    //     if (isSameMonth) {
-    //       cy.get('.previous-month-button').should('be.visible').click();
-    //     }
-    
-    //     for (let i = 0; i < monthsDifference; i++) {
-    //       cy.get('.next-month-button').should('be.visible').click();
-    //     }
-    
-    //     cy.get('.check-out-date').type(checkOutDate);
-    //     return checkOutDate;
-    //   }
 };
 
     

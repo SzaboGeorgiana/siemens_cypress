@@ -1,5 +1,6 @@
 import { homePage } from "../../ui-manager/georgiana/pages/pages";
-import dayjs from 'dayjs';
+import {selectDateInIframe,formatDateForSearch} from "../../ui-manager/georgiana/helpers/functions"
+
 
 
 describe("Home Page Test", () => {
@@ -81,64 +82,51 @@ describe("Home Page Test", () => {
   //   cy.url().should("eq", "https://ancabota09.wixsite.com/intern/");
   // })
 
+    it.only('verify Search With CheckOut One Day After CheckIn', () =>{ 
+      const todayDate = new Date(); 
+      const tomorrowDate = new Date(todayDate); 
+      tomorrowDate.setDate(todayDate.getDate() + 1); 
 
-    it('verifyMinimumBoundary', () => {
-      homePage.searchWidgetIsDisplayed();
-      homePage.tryToDecrementAdults(1);
-      
-      cy.get('.adults-counter').invoke('text').then((counterValue) => {
-        homePage.decrementAdultsButtonDisabled();
-        expect(parseInt(counterValue)).to.equal(1);
-        cy.log('The decrement button is disabled at counter value 1');
-      });
+      homePage.setDataInCalendar(todayDate,tomorrowDate)
     });
   
-  //   it('verifyMaximumBoundary', () => {
-  //     homePage.searchWidgetIsDisplayed();
-  //     homePage.tryToIncrementAdults(6);
-      
-  //     cy.get('.adults-counter').invoke('text').then((counterValue) => {
-  //       homePage.incrementAdultsButtonDisabled();
-  //       expect(parseInt(counterValue)).to.equal(6);
-  //       cy.log('The increment button is disabled at counter value 6');
-  //     });
-  //   });
   
-  //   it('verifySearchWithCheckOutOneDayAfterCheckIn', () => {
-  //     const today =  dayjs().format('YYYY-MM-DD');
-  //     const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
-  
-  //     homePage.setCheckInDate(today);
-  //     homePage.setCheckOutDate(tomorrow, 0, true);
-  //   });
-  // })
-  
-//     it('verifySearchWith2Adults', () => {
-//       const today = Cypress.moment().format('YYYY-MM-DD');
-//       const threeDaysAfter = Cypress.moment().add(3, 'days').format('YYYY-MM-DD');
-  
-//       verifySearchWithData(today, threeDaysAfter, 2, 0);
-//     });
-  
-//     function verifySearchWithData(checkIn, checkOut, adultsNb, kidsNb) {
-//       homePage.searchWidgetIsDisplayed();
-//       homePage.setCheckInDate(checkIn);
-//       homePage.setCheckOutDate(checkOut, 0, true);
-//       homePage.tryToIncrementAdults(adultsNb);
-//       homePage.tryToIncrementKids(kidsNb);
-  
-//       cy.get('.check-in-value').should('have.value', checkIn);
-//       cy.get('.check-out-value').should('have.value', checkOut);
-  
-//       cy.url().should('include', '/rooms-page-url');
-//       cy.get('.room-list').should('be.visible');
-//     }
-//   });
-  
-
-// })
+    it('verify Search With 2 Adults', () => {
+    })
 
 
+it.only('Adults Button increment', () => {
+    homePage.tryToIncrement(6);
+    homePage.adultValue()
+    .invoke('text')
+    .then((finalValue) => {
+      expect(finalValue).to.equal("6"); 
+      homePage.adultsButtonIncrement()
+            .should('be.visible').should('have.attr', 'disabled', 'disabled');
+
+        });
+      });
+  
+  it.only('Adults Button decrement', () => {
+    homePage.tryToDecrement(1);
+    homePage.adultValue()
+    .invoke('text')
+    .then((finalValue) => {
+      expect(finalValue).to.equal("1"); 
+      homePage.adultsButtonDecrement()
+            .should('be.visible').should('have.attr', 'disabled', 'disabled');
+
+        });
+});
 
 
-  })
+it('Kids Button increment and decrement', () => {
+
+});
+
+it('Search with adults and kids:', () => {
+
+});
+});
+ 
+
