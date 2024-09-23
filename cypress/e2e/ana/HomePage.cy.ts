@@ -2,6 +2,7 @@ import { homePage } from "../../ui-manager/ana/pages/pages";
 import { selectDateInIframe } from "../../ui-manager/ana/helpers/functions";
 import { formatDateForSearch } from "../../ui-manager/ana/helpers/functions";
 import { navigateMonthsInCalendarIframe } from "../../ui-manager/ana/helpers/functions";
+import { formatDateForAriaLabel } from "../../ui-manager/ana/helpers/functions";
 
 beforeEach(() => {
     cy.visit("/")
@@ -88,11 +89,19 @@ beforeEach(() => {
   it("Check In Future Day Test", () => {
 
     const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 1);
+    futureDate.setDate(futureDate.getDate() + 10);
+    const today = new Date();
+    today.setDate(today.getDate());
+
+    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
 
     cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in')
     .should('exist')
     .click()
+
+    for (let i = 0; i < monthsToClick; i++) {
+      navigateMonthsInCalendarIframe('.navigate-right');
+    }
 
     //future date
     selectDateInIframe(futureDate);
@@ -112,12 +121,19 @@ beforeEach(() => {
     .should('exist')
     .click()
 
-    //future date
-    selectDateInIframe(pastDate);
-    const formattedDate = formatDateForSearch(pastDate);
+    //past date
+    
+    let formattedDate = formatDateForAriaLabel(pastDate);
+    //selectDateInIframe(pastDate);
+    cy.get('iframe.U73P_q')
+      .its('0.contentDocument')
+      .find(`button[aria-label="${formattedDate}"]`)
+      .should('exist')
+      .should('have.attr', 'disabled');
 
+    formattedDate = formatDateForSearch(pastDate);
     cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-in-value')
-      .should('have.text', (formattedDate));
+      .should('not.have.text', (formattedDate));
 
   })
 
@@ -130,7 +146,7 @@ beforeEach(() => {
     .should('exist')
     .click()
 
-    //future date
+    //today
     selectDateInIframe(today);
     const formattedDate = formatDateForSearch(today);
 
@@ -170,11 +186,19 @@ beforeEach(() => {
   it("Check Out Future Day Test", () => {
 
     const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 1);
+    futureDate.setDate(futureDate.getDate() + 8);
+    const today = new Date();
+    today.setDate(today.getDate());
+
+    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
 
     cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out')
     .should('exist')
     .click()
+
+    for (let i = 0; i < monthsToClick; i++) {
+      navigateMonthsInCalendarIframe('.navigate-right');
+    }
 
     //future date
     selectDateInIframe(futureDate);
@@ -194,14 +218,15 @@ beforeEach(() => {
     .should('exist')
     .click()
 
-    selectDateInIframe(pastDate);
-    const formattedDate = formatDateForSearch(pastDate);
-    // cy.get('iframe.U73P_q')
-    //         .its('0.contentDocument')
-    //         .find(`button[aria-label="${formattedDate}"]`)
-    //         .should('exist')
-    //         .should('have.attr', 'disabled');
-      
+    //selectDateInIframe(pastDate);
+    let formattedDate = formatDateForAriaLabel(pastDate);
+    cy.get('iframe.U73P_q')
+      .its('0.contentDocument')
+      .find(`button[aria-label="${formattedDate}"]`)
+      .should('exist')
+      .should('have.attr', 'disabled');
+
+    formattedDate = formatDateForSearch(pastDate);
     cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out-value')
       .should('not.have.text', (formattedDate));
 
@@ -339,11 +364,17 @@ beforeEach(() => {
 
     //select a day after 5 days for checkout
     const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 5);
+    futureDate.setDate(futureDate.getDate() + 10);
+
+    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
 
     cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget #check-out')
     .should('exist')
     .click()
+
+    for (let i = 0; i < monthsToClick; i++) {
+      navigateMonthsInCalendarIframe('.navigate-right');
+    }
 
     selectDateInIframe(futureDate);
     formattedDate = formatDateForSearch(futureDate);

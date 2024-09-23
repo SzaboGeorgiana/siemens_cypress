@@ -1,4 +1,4 @@
-const formatDateForAriaLabel = (date: Date): string => {
+export const formatDateForAriaLabel = (date: Date): string => {
     const day = date.getDate();
     const dayName = date.toLocaleDateString('en-GB', { weekday: 'long' });
     const monthName = date.toLocaleDateString('en-GB', { month: 'long' });

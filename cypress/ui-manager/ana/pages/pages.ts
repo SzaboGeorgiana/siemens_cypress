@@ -35,8 +35,13 @@ export const homePage = {
     emailField: () => cy.get("#input_comp-jxbsa1em"),
     phoneField: () => cy.get("#input_comp-jxbsa1ev"),
     commentField: () => cy.get("#textarea_comp-jxbsa1f7"),
-    submitField: () => cy.get("#comp-jxbsa1fi > button"),
+    submitButton: () => cy.get("#comp-jxbsa1fi > button"),
+    form:() => cy.get(".JVi7i2.comp-jxbsa1dm.wixui-form"),
     title: () => cy.get('#i6ly3ckd > h2'),
     textBlock: () => cy.get('#i6ly3ckc_0'),
-    mapFullscreenButton: () => cy.get('#map_canvas > div > div.gm-style > div:nth-child(8) > button')
+    mapFullscreenButton: () => cy.get('#map_canvas > div > div.gm-style > div:nth-child(8) > button'),
+    facebookButton: () => cy.get('#i01vcq-i6m1143v > a'),
+    xButton: () => cy.get('#i21ibq-i6m1143v > a'),
+    pinterestButton: () => cy.get('#i3mls-i6m1143v > a'),
+    confirmationMessage: () => cy.get('#comp-jxbsa1fv > p > span')
   }

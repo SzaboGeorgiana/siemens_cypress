@@ -1,14 +1,14 @@
 import { contactPage } from "../../ui-manager/ana/pages/pages";
 import { homePage } from "../../ui-manager/ana/pages/pages";
 
+const contactPageURL = "https://ancabota09.wixsite.com/intern/contact";
+
 beforeEach(() => {
     cy.visit("/")
   })
 
   it("Contact Text Section Test", () => {
-    
-    homePage.contactButton().should("be.visible").click()
-    cy.url().should("eq", "https://ancabota09.wixsite.com/intern/contact")
+    cy.visit(contactPageURL)
 
     contactPage.title()
         .should('exist')
@@ -19,11 +19,10 @@ beforeEach(() => {
         .should('have.text',"If you have any questions, please contact us by telephone or email and we'll get back to you as soon as possible.\n\nWe look forward to hearing from you.\n")
   })
 
-  it.only("Map Fullscreen Test", () => {
-    
-    homePage.contactButton().should("be.visible").click()
-    cy.url().should("eq", "https://ancabota09.wixsite.com/intern/contact")
+  it("Map Fullscreen Test", () => {
+    cy.visit(contactPageURL)
 
+    //fullscreen 
     cy.get('iframe[title="Google Maps"]').its('0.contentDocument')
         .find('#map_canvas > div > div.gm-style > div:nth-child(8) > button')
         .should('exist')
@@ -32,11 +31,360 @@ beforeEach(() => {
         .click()
         .should('have.attr', 'aria-pressed', 'true')
     
-    cy.wait(2000);  // Adjust the time based on expected transition duration
-
-    // Verify the fullscreen mode
-    // cy.get('iframe[title="Google Maps"]').its('0.contentDocument.body')
-    //     .find('#map_canvas') 
-    //     .should('have.css', 'position', 'fixed');
+    cy.wait(2000);
     
   })
+
+  // it("Moving the Map Test", () => {
+  //   cy.visit(contactPageURL)
+
+  //   cy.wait(2000); 
+
+  //   cy.get('iframe[title="Google Maps"]').its('0.contentDocument')
+  //     .find('#map_canvas')
+  //     .should('exist')
+  //     .trigger('mousedown', { which: 1 })
+  //     .trigger('mousemove', { which: 1, x: 261, y: 0 })
+  //     .trigger('mouseup')
+    
+  //   cy.wait(2000); 
+    
+  // })
+
+  it("Facebook Button Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.facebookButton()
+      .should("exist")
+      .invoke('attr', 'href')
+      .should('equal', 'http://www.facebook.com/wix')
+  })
+
+  it("X Button Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.xButton()
+      .should("be.visible")
+      .invoke('attr', 'href')
+      .should('equal', 'https://x.com/wix')
+  })
+
+  it("Pinterest Button Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.pinterestButton()
+      .should("be.visible")
+      .invoke('attr', 'href')
+      .should('equal', 'http://pinterest.com/wixcom/')
+  })
+
+  it("Verify Name Required Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible')
+      .click();
+
+    contactPage.nameField()
+      .invoke('prop', 'validationMessage')
+      .should('equal', 'Please fill out this field.')
+  })
+
+  it("Verify Email Required Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('Ana')
+      .invoke('attr','value')
+      .should('equal','Ana');
+
+    contactPage.submitButton()
+      .click();
+    
+    contactPage.emailField()
+      .invoke('prop', 'validationMessage')
+      .should('equal', 'Please fill out this field.');
+
+  })
+
+  it("Verify Message Required Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('Ana')
+      .invoke('attr','value')
+      .should('equal','Ana');
+
+    contactPage.emailField()
+      .type('ana@gmail.com')
+      .invoke('attr','value')
+      .should('equal','ana@gmail.com');
+
+    contactPage.submitButton()
+      .click();
+    
+    contactPage.commentField()
+      .invoke('prop', 'validationMessage')
+      .should('equal', 'Please fill out this field.');
+
+  })
+
+  it("Verify Phone Required Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('Ana')
+      .invoke('attr','value')
+      .should('equal','Ana');
+
+    contactPage.emailField()
+      .type('ana@gmail.com')
+      .invoke('attr','value')
+      .should('equal','ana@gmail.com');
+
+    contactPage.commentField()
+      .type('Test Message')
+      .invoke('val')
+      .should('equal','Test Message');
+
+    contactPage.submitButton()
+      .click();
+    
+    contactPage.phoneField()
+      .invoke('prop', 'validationMessage')
+      .should('equal', 'Please fill out this field.');
+
+  })
+
+  it("Invalid Name Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('12345#@!gfa')
+      .invoke('attr','value')
+      .should('equal','12345#@!gfa');
+
+    contactPage.emailField()
+      .type('ana@gmail.com')
+      .invoke('attr','value')
+      .should('equal','ana@gmail.com');
+
+    contactPage.phoneField()
+      .type('0712345678')
+      .invoke('attr','value')
+      .should('equal','0712345678');
+
+    contactPage.commentField()
+      .type('Test Message')
+      .invoke('val')
+      .should('equal','Test Message');
+
+    contactPage.submitButton()
+      .click();
+
+    contactPage.nameField()
+      .invoke('prop', 'validationMessage')
+      .should('equal', 'Cannot type numbers or special characters.');
+    
+  })
+
+  it("Invalid Email Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('Ana')
+      .invoke('attr','value')
+      .should('equal','Ana');
+
+    contactPage.emailField()
+      .type('mailgresit')
+      .invoke('attr','value')
+      .should('equal','mailgresit');
+
+    contactPage.phoneField()
+      .type('0712345678')
+      .invoke('attr','value')
+      .should('equal','0712345678');
+
+    contactPage.commentField()
+      .type('Test Message')
+      .invoke('val')
+      .should('equal','Test Message');
+
+    contactPage.submitButton()
+      .click();
+
+    contactPage.emailField()
+      .invoke('prop', 'validationMessage')
+      .should('contain', "Please include an '@' in the email address.");
+    
+  })
+
+  it("Invalid Email Test Again", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('Ana')
+      .invoke('attr','value')
+      .should('equal','Ana');
+
+    contactPage.emailField()
+      .type('mailgresit@')
+      .invoke('attr','value')
+      .should('equal','mailgresit@');
+
+    contactPage.submitButton()
+      .click();
+
+    contactPage.emailField()
+      .invoke('prop', 'validationMessage')
+      .should('contain', "Please enter a part following '@'.");
+    
+  })
+
+  it("Invalid Email Test Again x2", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('Ana')
+      .invoke('attr','value')
+      .should('equal','Ana');
+
+    contactPage.emailField()
+      .type('mailgresit@greseala@')
+      .invoke('attr','value')
+      .should('equal','mailgresit@greseala@');
+
+    contactPage.submitButton()
+      .click();
+
+    contactPage.emailField()
+      .invoke('prop', 'validationMessage')
+      .should('contain', "A part following '@' should not contain the symbol '@'.");
+    
+  })
+
+  it("Invalid Phone Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('Ana')
+      .invoke('attr','value')
+      .should('equal','Ana');
+
+    contactPage.emailField()
+      .type('mail@corect.com')
+      .invoke('attr','value')
+      .should('equal','mail@corect.com');
+
+    contactPage.phoneField()
+      .type('qwerty')
+      .invoke('attr','value')
+      .should('equal','qwerty');
+
+    contactPage.commentField()
+      .type('Test Message')
+      .invoke('val')
+      .should('equal','Test Message');
+
+    contactPage.submitButton()
+      .click();
+
+    contactPage.phoneField()
+      .invoke('prop', 'validationMessage')
+      .should('equal', "Cannot type letters or special characters.");
+    
+  })
+
+  it.only("Valid Data Test", () => {
+    cy.visit(contactPageURL)
+
+    contactPage.form()
+      .should('be.visible');
+
+    contactPage.submitButton()
+      .should('be.visible');
+
+    contactPage.nameField()
+      .type('Ana')
+      .invoke('attr','value')
+      .should('equal','Ana');
+
+    contactPage.emailField()
+      .type('mail@corect.com')
+      .invoke('attr','value')
+      .should('equal','mail@corect.com');
+
+    contactPage.phoneField()
+      .type('0725754442')
+      .invoke('attr','value')
+      .should('equal','0725754442');
+
+    contactPage.commentField()
+      .type('Test Message')
+      .invoke('val')
+      .should('equal','Test Message');
+
+    contactPage.confirmationMessage()
+      .should('not.be.visible');
+
+    contactPage.submitButton()
+      .click();
+
+    contactPage.confirmationMessage()
+      .should('be.visible')
+      .should('equal','Thanks for submitting!');
+    
+  })
+
