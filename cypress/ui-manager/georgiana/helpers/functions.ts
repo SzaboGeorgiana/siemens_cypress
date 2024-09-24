@@ -1,3 +1,5 @@
+import { roomsPage } from "../pages/pages";
+
 export function generateRandomWords(length: number): string {
     const characters =
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -26,7 +28,23 @@ export function selectDateInIframe(date: Date)  {
           .find(`button[aria-label="${formattedDate}"]`)
           .click();
 };
+export function selectDateInIframe_rooms(date: Date, ok: boolean)  {
+  const formattedDate = formatDateForAriaLabel(date);
 
+  if(ok)
+  roomsPage.iframeSelector()
+         .its('0.contentDocument') // Accesează documentul iframe-ului
+          .find('.calendar')  // Selectează calendarul
+          .find(`button[aria-label="${formattedDate}"]`).first()
+          .click();
+        else
+      roomsPage.iframeSelector()
+          .its('0.contentDocument') // Accesează documentul iframe-ului
+           .find('.calendar')  // Selectează calendarul
+           .find(`button[aria-label="${formattedDate}"]`).last()
+           .click();
+
+};
 
 export const formatDateForSearch = (date: Date): string => {
   const day = date.getDate();

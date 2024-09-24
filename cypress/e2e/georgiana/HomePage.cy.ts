@@ -82,7 +82,35 @@ describe("Home Page Test", () => {
   //   cy.url().should("eq", "https://ancabota09.wixsite.com/intern/");
   // })
 
-    it.only('verify Search With CheckOut One Day After CheckIn', () =>{ 
+
+    it('Adults Button increment', () => {
+      cy.wait(10000)
+      homePage.tryToIncrement(6);
+      homePage.adultValue()
+      .invoke('text')
+      .then((finalValue) => {
+        expect(finalValue).to.equal("6"); 
+        homePage.adultsButtonIncrement()
+              .should('be.visible').should('have.attr', 'disabled', 'disabled');
+
+          });
+        });
+    
+    it('Adults Button decrement', () => {
+      cy.wait(10000)
+      homePage.tryToDecrement(1);
+      homePage.adultValue()
+      .invoke('text')
+      .then((finalValue) => {
+        expect(finalValue).to.equal("1"); 
+        homePage.adultsButtonDecrement()
+              .should('be.visible').should('have.attr', 'disabled', 'disabled');
+
+        });
+    });
+
+    it('verify Search With CheckOut One Day After CheckIn', () =>{ 
+      cy.wait(10000)
       const todayDate = new Date(); 
       const tomorrowDate = new Date(todayDate); 
       tomorrowDate.setDate(todayDate.getDate() + 1); 
@@ -90,43 +118,90 @@ describe("Home Page Test", () => {
       homePage.setDataInCalendar(todayDate,tomorrowDate)
     });
   
-  
-    it('verify Search With 2 Adults', () => {
-    })
+
+    // it.only('verify Search With 2 Adults', () => {
+    //   cy.wait(10000)
+
+    //   const checkInDate = new Date(); 
+    //   const checkOutDate = new Date(checkInDate); 
+    //   checkOutDate.setDate(checkInDate.getDate() + 3); 
+
+    //   homePage.setDataInCalendar(checkInDate,checkOutDate)
+    //   homePage.tryToIncrement(2);
+    //   homePage.adultValue()
+    //   .invoke('text')
+    //   .then((finalValue) => {
+    //     expect(finalValue).to.equal("2"); 
+        
+    //     cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    //     .its('0.contentDocument')
+    //     .find('#search-widget > form > ul > li.search > button')
+    //     .click()
+
+    //     cy.url().should('include', 'https://ancabota09.wixsite.com/intern/rooms');
+    //   });
 
 
-it.only('Adults Button increment', () => {
-    homePage.tryToIncrement(6);
-    homePage.adultValue()
-    .invoke('text')
-    .then((finalValue) => {
-      expect(finalValue).to.equal("6"); 
-      homePage.adultsButtonIncrement()
-            .should('be.visible').should('have.attr', 'disabled', 'disabled');
 
+    // Funcția separată completarea datelor in search widget
+    function setDataInSearchWidget(checkInDate,checkOutDate,adultsNb,kidsNb) {
+      cy.wait(10000);
+
+      homePage.setDataInCalendar(checkInDate, checkOutDate);
+      homePage.tryToIncrement(adultsNb);
+      homePage.tryToIncrementKids(kidsNb);
+
+      homePage.adultValue()
+        .invoke('text')
+        .then((finalValue) => {
+        
+          expect(finalValue).to.equal(adultsNb.toString());
+          
+              homePage.childrenValue()
+              .invoke('text')
+              .then((childrenFinalValue) => {
+              
+                expect(childrenFinalValue).to.equal(kidsNb.toString());
+
+                homePage.searchButton()
+                  .click();
+
+                cy.url().should('include', 'https://ancabota09.wixsite.com/intern/rooms');
         });
       });
-  
-  it.only('Adults Button decrement', () => {
-    homePage.tryToDecrement(1);
-    homePage.adultValue()
-    .invoke('text')
-    .then((finalValue) => {
-      expect(finalValue).to.equal("1"); 
-      homePage.adultsButtonDecrement()
-            .should('be.visible').should('have.attr', 'disabled', 'disabled');
+    }
 
-        });
-});
+    // Apelarea funcției în test
+    it.only('verify Search With 2 Adults', () => {
+      const checkInDate = new Date(); 
+      const checkOutDate = new Date(checkInDate); 
+      checkOutDate.setDate(checkInDate.getDate() + 3); 
+
+      setDataInSearchWidget(checkInDate,checkOutDate,2,0);
+    });
 
 
-it('Kids Button increment and decrement', () => {
 
-});
+    // Apelarea funcției în test
+    it.only('Search With 8 Adults', () => {
+      const checkInDate = new Date(); 
+      const checkOutDate = new Date(checkInDate); 
+      checkOutDate.setDate(checkInDate.getDate() + 3); 
 
-it('Search with adults and kids:', () => {
+      setDataInSearchWidget(checkInDate,checkOutDate,8,0);
+    });
 
-});
+    // Apelarea funcției în test
+    it.only('Search With 2 Kids', () => {
+      const checkInDate = new Date(); 
+      const checkOutDate = new Date(checkInDate); 
+      checkOutDate.setDate(checkInDate.getDate() + 3); 
+
+      setDataInSearchWidget(checkInDate,checkOutDate,1,2);
+    });
+
+    
+
 });
  
 

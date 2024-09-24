@@ -1,4 +1,4 @@
-import { formatDateForSearch, selectDateInIframe } from "../helpers/functions";
+import { formatDateForSearch, selectDateInIframe, selectDateInIframe_rooms } from "../helpers/functions";
 
 export const explorePage = {
   // explorehoteltitle: () => cy.get('#i6ksjvsy'),
@@ -68,6 +68,9 @@ export const homePage = {
     childrenValue: () => cy.get('iframe.nKphmK[title="Wix Hotels"]')
     .its('0.contentDocument')
     .find('#children .value'),
+    searchButton:()=> cy.get('iframe.nKphmK[title="Wix Hotels"]')
+    .its('0.contentDocument')
+    .find('#search-widget > form > ul > li.search > button'),
 
     // clickOnHomeAndAwayButton: () => cy.get("#i6ksxrtk > h1 > a").should('be.visible').click(),
     // clickOnHomeButton: () => cy.get("#i6kl732v0label").should('be.visible').click(),
@@ -87,12 +90,10 @@ export const homePage = {
 
       // Verifică dacă widgetul de căutare este afișat
     setDataInCalendar:(checkInDate, checkOutDate) =>{
-      // checkOutDate.setDate(todayDate.getDate() + 3); 
-
       homePage.checkInButton()
         .should('exist')
         .click();
-  
+
       selectDateInIframe(checkInDate);
   
       const formattedCheckinDate = formatDateForSearch(checkInDate);
@@ -150,21 +151,159 @@ export const homePage = {
           };
           clickUntilMatch();
         });
-      }
+      },
 
   
-    //   tryToIncrementKids(targetValue) {
-    //     cy.get('.kids-counter').invoke('text').then((counterValue) => {
-    //       while (parseInt(counterValue) < targetValue) {
-    //         this.incrementKidsButtonDisabled(); // Verifică dacă butonul este dezactivat
-    //         cy.get('.increment-kids-button').click();
-    //         cy.get('.kids-counter').invoke('text').then((newValue) => {
-    //           counterValue = newValue;
-    //           cy.log('Counter value after increment: ' + counterValue);
-    //         });
-    //       }
-    //     });
-    //   },
+      tryToIncrementKids:(clicks) => {
+        homePage.childrenValue().invoke('text').then((currentValue) => {
+          let currentVal = parseInt(currentValue); // Convertește valoarea la număr
+          const clickUntilMatch = () => {
+            if (currentVal !== clicks) {
+              homePage.childrensButtonIncrement()
+                .should('be.visible')
+                .click()
+                .then(() => {
+                  homePage.childrenValue().invoke('text').then((newVal) => {
+                    currentVal = parseInt(newVal); // Actualizăm valoarea curentă
+                    clickUntilMatch();
+                  });
+                });
+            }
+          };
+          clickUntilMatch();
+        });
+      },
+
+
+};
+
+
+export const roomsPage = {
+  iframeSelector:()=> cy.get('#i6klgqap_0 > .nKphmK'),
+  
+  checkInButton:()=> roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#check-in'),
+  checkInValue:()=>roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#check_in-value'),
+  checkOutButton:()=>roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#check-out'),
+  checkOutValue:()=>roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#check_out-value'),
+  adultsButtonIncrement:()=>roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#adults .up'),
+  adultsButtonDecrement:()=>roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#adults .down'),
+  adultValue: () => roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#adults .value'),
+  childrensButtonIncrement:()=>roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#children .up'),
+  childrenButtonDecrement:()=>roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#children .down'),
+  childrenValue: () => roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#children .value'),
+  searchButton: () => roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('form > ul > li.search-btn > button.search.s-button'),
+
+
+
+    // Verifică dacă widgetul de căutare este afișat
+  setDataInCalendar:(checkInDate, checkOutDate) =>{
+    roomsPage.checkInButton()
+      .should('exist')
+      .click();
+
+    selectDateInIframe_rooms(checkInDate,true);
+
+    const formattedCheckinDate = formatDateForSearch(checkInDate);
+    roomsPage.checkInValue()
+      .should('have.text', formattedCheckinDate);
+
+    // roomsPage.checkOutButton()
+    //   .should('exist')
+    //   .click();
+
+    selectDateInIframe_rooms(checkOutDate,false);
+
+    const formattedCheckoutDate = formatDateForSearch(checkOutDate);
+    roomsPage.checkOutValue()
+      .should('have.text', formattedCheckoutDate);
+  },
+
+
+    tryToIncrement: (clicks) => {
+      roomsPage.adultValue().invoke('text').then((currentValue) => {
+        let currentVal = parseInt(currentValue); // Convertește valoarea la număr      
+        const clickUntilMatch = () => {
+          if (currentVal !== clicks) {
+            roomsPage.adultsButtonIncrement()
+              .should('be.visible')
+              .click()
+              .then(() => {
+                roomsPage.adultValue().invoke('text').then((newVal) => {
+                  currentVal = parseInt(newVal); // Actualizăm valoarea curentă
+                  clickUntilMatch();
+                });
+              });
+          }
+        };
+        clickUntilMatch();
+      });
+    },
+    
+
+    tryToDecrement:(clicks) => {
+      roomsPage.adultValue().invoke('text').then((currentValue) => {
+        let currentVal = parseInt(currentValue); // Convertește valoarea la număr
+        const clickUntilMatch = () => {
+          if (currentVal !== clicks) {
+            roomsPage.adultsButtonDecrement()
+              .should('be.visible')
+              .click()
+              .then(() => {
+                roomsPage.adultValue().invoke('text').then((newVal) => {
+                  currentVal = parseInt(newVal); // Actualizăm valoarea curentă
+                  clickUntilMatch();
+                });
+              });
+          }
+        };
+        clickUntilMatch();
+      });
+    },
+
+
+    tryToIncrementKids:(clicks) => {
+      roomsPage.childrenValue().invoke('text').then((currentValue) => {
+        let currentVal = parseInt(currentValue); // Convertește valoarea la număr
+        const clickUntilMatch = () => {
+          if (currentVal !== clicks) {
+            roomsPage.childrensButtonIncrement()
+              .should('be.visible')
+              .click()
+              .then(() => {
+                roomsPage.childrenValue().invoke('text').then((newVal) => {
+                  currentVal = parseInt(newVal); // Actualizăm valoarea curentă
+                  clickUntilMatch();
+                });
+              });
+          }
+        };
+        clickUntilMatch();
+      });
+    },
+
+
 };
 
     
