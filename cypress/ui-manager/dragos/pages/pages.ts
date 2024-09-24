@@ -38,6 +38,9 @@ export const roomsURL = "https://ancabota09.wixsite.com/intern/rooms";
   
   export const roomsPage = {
     iframeSelector: '#i6klgqap_0 > .nKphmK',
+    searchButton: () => 'button.search',
+    filterResults: () => 'h2.s-title.resultbar',
+    clearFiltersBtn: () => '#content > div > div.clearfix.content-head > h2 > a',
 
     standardRoom: () => 'li:nth-child(1) button.fancy-btn.s-button',
     standardRoomTitle: () => 'li:nth-child(1) a.s-title',
@@ -59,6 +62,24 @@ export const roomsURL = "https://ancabota09.wixsite.com/intern/rooms";
 
     //on the specific room page
     roomPageTitle: () => 'h2.s-title',
+    roomDescription: () => 'div.content-block.s-description > p', 
+    roomProperties: () => 'div.content-block.properties', 
+    roomAmenities: () => 'div.content-block.amenities', 
+    roomCheckInAndOut: () => 'div.content-block.terms', 
+    roomTerms: () => 'div.content-block.tac', 
+    readPolicies: () => 'li.policy-link a.policies',
+    roomPrice: () => '.heading .price', 
+    roomFinalPrice: () => 'tr.total td[ng-bind="paymentDetails.total | currency:paymentDetails.currency"]',
+
+    checkInCalendar: () => '#check-in', 
+    checkOutCalendar: () => '#check-out', 
+
+    adultIncrementButton: () => 'button.increment-adult',
+    adultDecrementButton: () => 'button.decrement-adult', 
+
+
+
+    templateDescription: "I'm a paragraph. Click here to add your own text and edit me. I’m a great place for you to tell a story and let your users know a little more about you."
 
   }
   

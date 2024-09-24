@@ -1,7 +1,7 @@
 import { roomsURL, roomsPage } from "../../ui-manager/dragos/pages/pages";
 import { isDisabledDate, selectDateCheckIn, selectDateCheckOut } from "../../ui-manager/dragos/helpers/functions";
 
-describe("Test ExplorePage", () => {
+describe("Test RoomsPage", () => {
 
   beforeEach(() => {
     cy.visit(roomsURL);
@@ -13,7 +13,7 @@ describe("Test ExplorePage", () => {
     const nextDate = new Date();
     nextDate.setDate(today.getDate() + 3);
 
-    cy.get(roomsPage.iframeSelector).its('0.contentDocument').find('#check-in').should('exist').click();
+    cy.get(roomsPage.iframeSelector).its('0.contentDocument').find(roomsPage.checkInCalendar()).should('exist').click();
     selectDateCheckIn(today);
 
     //cy.get(roomsPage.iframeSelector).its('0.contentDocument').find('#check-out').should('exist').click();
@@ -30,7 +30,7 @@ describe("Test ExplorePage", () => {
 
     cy.get(roomsPage.iframeSelector)
         .its('0.contentDocument')
-        .find('button.search') 
+        .find(roomsPage.searchButton()) 
         .should('be.visible') 
         .click();
 
@@ -43,7 +43,7 @@ describe("Test ExplorePage", () => {
 
     cy.get(roomsPage.iframeSelector)
         .its('0.contentDocument')
-        .find('h2.s-title.resultbar')
+        .find(roomsPage.filterResults())
         .should('exist')
         .invoke('text')
         .then((text) => {
@@ -63,30 +63,30 @@ describe("Test ExplorePage", () => {
         const nextDate = new Date();
         nextDate.setDate(today.getDate() + 3);
     
-        cy.get(roomsPage.iframeSelector).its('0.contentDocument').find('#check-in').should('exist').click();
+        cy.get(roomsPage.iframeSelector).its('0.contentDocument').find(roomsPage.checkInCalendar()).should('exist').click();
         selectDateCheckIn(today);
         selectDateCheckOut(nextDate);
 
         cy.get(roomsPage.iframeSelector)
             .its('0.contentDocument')
-            .find('button.search') 
+            .find(roomsPage.searchButton()) 
             .should('be.visible') 
             .click();
     
         
         cy.get(roomsPage.iframeSelector)
             .its('0.contentDocument')
-            .find('h2.s-title.resultbar')
+            .find(roomsPage.filterResults())
             .should('exist')
 
         cy.get(roomsPage.iframeSelector)
             .its('0.contentDocument')
-            .find('#content > div > div.clearfix.content-head > h2 > a')
+            .find(roomsPage.clearFiltersBtn())
             .should('exist').click()
         
         cy.get(roomsPage.iframeSelector)
             .its('0.contentDocument')
-            .find('h2.s-title.resultbar')
+            .find(roomsPage.filterResults())
             .should('not.exist')
     });
 
@@ -168,7 +168,7 @@ describe("Test ExplorePage", () => {
           });
     });
 
-  it.only('should verify the standard room title and correct room redirection', () => {
+  it('should verify the standard room title and correct room redirection', () => {
         cy.wait(3000)
         cy.get(roomsPage.iframeSelector)
           .its('0.contentDocument')
@@ -194,7 +194,7 @@ describe("Test ExplorePage", () => {
           });
     });
 
-  it.only('should verify the cottage room title and correct room redirection', () => {
+  it('should verify the cottage room title and correct room redirection', () => {
         cy.wait(3000)
         cy.get(roomsPage.iframeSelector)
           .its('0.contentDocument')
@@ -220,7 +220,7 @@ describe("Test ExplorePage", () => {
           });
     });
 
-  it.only('should verify the classic room title and correct room redirection', () => {
+  it('should verify the classic room title and correct room redirection', () => {
         cy.wait(3000)
         cy.get(roomsPage.iframeSelector)
           .its('0.contentDocument')
@@ -245,4 +245,491 @@ describe("Test ExplorePage", () => {
                 .should('eq', "Classic App");
           });
     });
+
+  it('test standard room details ', () => {
+        cy.wait(3000)
+        let currentUrl: string;
+        cy.url().then((url) => {
+            currentUrl = url; // Store the URL in variable
+          });
+
+        cy.get(roomsPage.iframeSelector)
+          .its('0.contentDocument')
+          .should('exist')
+          .then((iframeDoc) => {
+            cy.wrap(iframeDoc)
+              .find(roomsPage.standardRoom()) 
+              .should('be.visible').first().click()
+
+            cy.wait(3000);
+            cy.url().should('not.eq',"https://ancabota09.wixsite.com/intern/rooms")
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomPageTitle()) 
+                .should('be.visible').invoke('text')
+                .then(text => text.trim()) // Trim whitespace because it contains /n
+                .should('eq', "Standard Suite");
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomDescription()) 
+                .should('be.visible')
+                .invoke('text')
+                .then(descriptionText => {
+                  const trimmedText = descriptionText.trim();
+                  expect(trimmedText).to.not.be.empty; // Should not be empty
+                  expect(trimmedText).to.not.equal(roomsPage.templateDescription); 
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomProperties()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Accommodates","a room must specify the number of accomodates"); //a room must specify the number of accomodates
+                  expect(trimmedText).to.contain("Beds","a room must provide beds info"); //a room must provide beds info
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomAmenities()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.exist;//("room's amenities should be displayed"); 
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomCheckInAndOut()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Check-In"); 
+                  expect(trimmedText).to.contain("Check-Out"); //to contain info about check-in and check-out time
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomTerms()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Minimum nights"); //to contain terms info
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomTerms()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Minimum nights"); //to contain terms info
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.readPolicies())
+                .should('be.visible') // button link is visible
+                .then(($link) => {
+                    $link.removeAttr('target');
+                    cy.wrap($link).click();
+                    
+                    cy.wait(2000)
+                    cy.url().should('not.eq', currentUrl); // Ensure URL has changed
+        
+                    cy.url().should('include', '/terms');
+                })
+            
+          });
+    });
+
+  it('test cottage room details ', () => {
+        cy.wait(3000)
+        let currentUrl: string;
+        cy.url().then((url) => {
+            currentUrl = url; // Store the URL in variable
+          });
+
+        cy.get(roomsPage.iframeSelector)
+          .its('0.contentDocument')
+          .should('exist')
+          .then((iframeDoc) => {
+            cy.wrap(iframeDoc)
+              .find(roomsPage.cottageRoom()) 
+              .should('be.visible').first().click()
+
+            cy.wait(3000);
+            cy.url().should('not.eq',"https://ancabota09.wixsite.com/intern/rooms")
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomPageTitle()) 
+                .should('be.visible').invoke('text')
+                .then(text => text.trim()) // Trim whitespace because it contains /n
+                .should('eq', "Cottage");
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomDescription()) 
+                .should('be.visible')
+                .invoke('text')
+                .then(descriptionText => {
+                  const trimmedText = descriptionText.trim();
+                  expect(trimmedText).to.not.be.empty; // Should not be empty
+                  expect(trimmedText).to.not.equal(roomsPage.templateDescription); 
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomProperties()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Accommodates","a room must specify the number of accomodates"); //a room must specify the number of accomodates
+                  expect(trimmedText).to.contain("Beds","a room must provide beds info"); //a room must provide beds info
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomAmenities()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.exist;//("room's amenities should be displayed"); 
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomCheckInAndOut()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Check-In"); 
+                  expect(trimmedText).to.contain("Check-Out"); //to contain info about check-in and check-out time
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomTerms()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Minimum nights"); //to contain terms info
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomTerms()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Minimum nights"); //to contain terms info
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.readPolicies())
+                .should('be.visible') // button link is visible
+                .then(($link) => {
+                    $link.removeAttr('target');
+                    cy.wrap($link).click();
+                    
+                    cy.wait(2000)
+                    cy.url().should('not.eq', currentUrl); // Ensure URL has changed
+        
+                    cy.url().should('include', '/terms');
+                })
+            
+          });
+    });
+
+  it('test classic room details ', () => {
+        cy.wait(3000)
+        let currentUrl: string;
+        cy.url().then((url) => {
+            currentUrl = url; // Store the URL in variable
+          });
+
+        cy.get(roomsPage.iframeSelector)
+          .its('0.contentDocument')
+          .should('exist')
+          .then((iframeDoc) => {
+            cy.wrap(iframeDoc)
+              .find(roomsPage.classicRoom()) 
+              .should('be.visible').first().click()
+
+            cy.wait(3000);
+            cy.url().should('not.eq',"https://ancabota09.wixsite.com/intern/rooms")
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomPageTitle()) 
+                .should('be.visible').invoke('text')
+                .then(text => text.trim()) // Trim whitespace because it contains /n
+                .should('eq', "Classic App");
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomDescription()) 
+                .should('be.visible')
+                .invoke('text')
+                .then(descriptionText => {
+                  const trimmedText = descriptionText.trim();
+                  expect(trimmedText).to.not.be.empty; // Should not be empty
+                  expect(trimmedText).to.not.equal(roomsPage.templateDescription); 
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomProperties()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Accommodates","a room must specify the number of accomodates"); //a room must specify the number of accomodates
+                  expect(trimmedText).to.contain("Beds","a room must provide beds info"); //a room must provide beds info
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomAmenities()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.exist;//("room's amenities should be displayed"); 
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomCheckInAndOut()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Check-In"); 
+                  expect(trimmedText).to.contain("Check-Out"); //to contain info about check-in and check-out time
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomTerms()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Minimum nights"); //to contain terms info
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.roomTerms()) 
+                .should('be.visible')
+                .invoke('text') 
+                .then((propertiesText) => {
+                  const trimmedText = propertiesText.trim(); // Trim whitespace
+                  expect(trimmedText).to.not.be.empty; 
+                  expect(trimmedText).to.contain("Minimum nights"); //to contain terms info
+
+                });
+
+            cy.wrap(iframeDoc)
+                .find(roomsPage.readPolicies())
+                .should('be.visible') // button link is visible
+                .then(($link) => {
+                    $link.removeAttr('target');
+                    cy.wrap($link).click();
+                    
+                    cy.wait(2000)
+                    cy.url().should('not.eq', currentUrl); // Ensure URL has changed
+        
+                    cy.url().should('include', '/terms');
+                })
+            
+          });
+    });
+
+  it('test standard room filters ', () => {
+        cy.wait(3000)
+
+        var priceValue, newPrice;
+        const today = new Date();
+        const nextDate = new Date();
+        nextDate.setDate(today.getDate() + 3);
+        
+        cy.get(roomsPage.iframeSelector)
+          .its('0.contentDocument')
+          .should('exist')
+          .then((iframeDoc) => {
+            cy.wrap(iframeDoc)
+              .find(roomsPage.standardRoom()) 
+              .should('be.visible').first().click();
+        
+            cy.wait(3000);
+            cy.url().should('not.eq', "https://ancabota09.wixsite.com/intern/rooms");
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomPageTitle()) 
+              .should('be.visible').invoke('text')
+              .then(text => text.trim()) // Trim whitespace
+              .should('eq', "Standard Suite");
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomPrice()) 
+              .should('be.visible').invoke('text')
+              .then((priceText) => {
+                priceValue = parseFloat(priceText.replace(/[^0-9.-]+/g, "")); // Extract numeric value from text
+                expect(priceText).to.not.be.empty; 
+                expect(priceValue).to.match(/\d+/);
+              });
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.checkInCalendar()) 
+              .should('be.visible').click();
+        
+            selectDateCheckIn(today);
+            selectDateCheckOut(nextDate);
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomFinalPrice()) 
+              .should('be.visible').invoke('text')
+              .then((priceText) => {
+                newPrice = parseFloat(priceText.replace(/[^0-9.-]+/g, "")); // Extract numeric value from text
+                expect(priceText).to.not.be.empty; 
+                expect(newPrice).to.match(/\d+/);
+        
+                // Compare the new price with the initial price
+                expect(newPrice).to.be.greaterThan(priceValue); // Check that the new price is higher
+              });
+          });
+            
+          
+    });
+
+  it('test cottage room filters ', () => {
+        cy.wait(3000)
+
+        var priceValue, newPrice;
+        const today = new Date();
+        const nextDate = new Date();
+        nextDate.setDate(today.getDate() + 3);
+        
+        cy.get(roomsPage.iframeSelector)
+          .its('0.contentDocument')
+          .should('exist')
+          .then((iframeDoc) => {
+            cy.wrap(iframeDoc)
+              .find(roomsPage.cottageRoom()) 
+              .should('be.visible').first().click();
+        
+            cy.wait(3000);
+            cy.url().should('not.eq', "https://ancabota09.wixsite.com/intern/rooms");
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomPageTitle()) 
+              .should('be.visible').invoke('text')
+              .then(text => text.trim()) // Trim whitespace
+              .should('eq', "Cottage");
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomPrice()) 
+              .should('be.visible').invoke('text')
+              .then((priceText) => {
+                priceValue = parseFloat(priceText.replace(/[^0-9.-]+/g, "")); // Extract numeric value from text
+                expect(priceText).to.not.be.empty; 
+                expect(priceValue).to.match(/\d+/);
+              });
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.checkInCalendar()) 
+              .should('be.visible').click();
+        
+            selectDateCheckIn(today);
+            selectDateCheckOut(nextDate);
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomFinalPrice()) 
+              .should('be.visible').invoke('text')
+              .then((priceText) => {
+                newPrice = parseFloat(priceText.replace(/[^0-9.-]+/g, "")); // Extract numeric value from text
+                expect(priceText).to.not.be.empty; 
+                expect(newPrice).to.match(/\d+/);
+        
+                // Compare the new price with the initial price
+                expect(newPrice).to.be.greaterThan(priceValue); // Check that the new price is higher
+              });
+          });
+            
+          
+    });
+
+  it('test classic room filters ', () => {
+        cy.wait(3000)
+
+        var priceValue, newPrice;
+        const today = new Date();
+        const nextDate = new Date();
+        nextDate.setDate(today.getDate() + 3);
+        
+        cy.get(roomsPage.iframeSelector)
+          .its('0.contentDocument')
+          .should('exist')
+          .then((iframeDoc) => {
+            cy.wrap(iframeDoc)
+              .find(roomsPage.classicRoom()) 
+              .should('be.visible').first().click();
+        
+            cy.wait(3000);
+            cy.url().should('not.eq', "https://ancabota09.wixsite.com/intern/rooms");
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomPageTitle()) 
+              .should('be.visible').invoke('text')
+              .then(text => text.trim()) // Trim whitespace
+              .should('eq', "Classic App");
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomPrice()) 
+              .should('be.visible').invoke('text')
+              .then((priceText) => {
+                priceValue = parseFloat(priceText.replace(/[^0-9.-]+/g, "")); // Extract numeric value from text
+                expect(priceText).to.not.be.empty; 
+                expect(priceValue).to.match(/\d+/);
+              });
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.checkInCalendar()) 
+              .should('be.visible').click();
+        
+            selectDateCheckIn(today);
+            selectDateCheckOut(nextDate);
+        
+            cy.wrap(iframeDoc)
+              .find(roomsPage.roomFinalPrice()) 
+              .should('be.visible').invoke('text')
+              .then((priceText) => {
+                newPrice = parseFloat(priceText.replace(/[^0-9.-]+/g, "")); // Extract numeric value from text
+                expect(priceText).to.not.be.empty; 
+                expect(newPrice).to.match(/\d+/);
+        
+                // Compare the new price with the initial price
+                expect(newPrice).to.be.greaterThan(priceValue); // Check that the new price is higher
+              });
+          });
+            
+          
+    });
+
 });
