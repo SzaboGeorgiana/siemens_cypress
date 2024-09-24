@@ -20,13 +20,6 @@ const formatDateForSearch = (date: Date): string => {
 
 describe("Test Homepage", () => {
 
-    const iframeSelector = 'iframe.nKphmK[title="Wix Hotels"]';
-    const facebookPageUrl = "https://www.facebook.com/";
-    const twitterPageUrl = "https://x.com/wix";
-    const pinterestPageUrl = "https://www.pinterest.com/wixcom/";
-    const wixPageUrl = "https://www.wix.com/?utm_campaign=vir_created_with";
-    const linkAddress = "info@mysite.com";
-
     beforeEach(() => {
         cy.visit(homeURL);
     })
@@ -48,12 +41,12 @@ describe("Test Homepage", () => {
     it('Today Date Selection Check-In Calendar', () => {
         const today = new Date();
 
-        cy.get(iframeSelector).its('0.contentDocument').find('#search-widget #check-in').should('exist').click();
+        cy.get(homepage.iframeSelector).its('0.contentDocument').find('#search-widget #check-in').should('exist').click();
         selectDateInIframe(today);
 
         const formattedDate = formatDateForSearch(today);
 
-        cy.get(iframeSelector).its('0.contentDocument').find('#search-widget #check-in-value')
+        cy.get(homepage.iframeSelector).its('0.contentDocument').find('#search-widget #check-in-value')
             .should('have.text', formattedDate);
     });
 
@@ -61,19 +54,19 @@ describe("Test Homepage", () => {
         const pastDate = new Date();
         pastDate.setDate(pastDate.getDate() - 2);
 
-        cy.get(iframeSelector).its('0.contentDocument').find('#search-widget #check-in').should('exist').click();
+        cy.get(homepage.iframeSelector).its('0.contentDocument').find('#search-widget #check-in').should('exist').click();
         isDisabledDate(pastDate)
     });
 
     it('Adults Increase Button', () => {
         cy.wait(3000)
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults > .up').click({ force: true,  multiple: true }); 
 
     
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults span.value.ng-binding')
             .should('have.text', '2');
@@ -82,12 +75,12 @@ describe("Test Homepage", () => {
     it('Adults Decrease Button from 1 should remain 1', () => {
         cy.wait(3000)
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults > .down').click({ force: true,  multiple: true }); 
 
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults span.value.ng-binding')
             .should('have.text', '1');
@@ -96,26 +89,26 @@ describe("Test Homepage", () => {
     it('Adults Decrease Button', () => {
         cy.wait(3000)
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults > .up').click({ force: true,  multiple: true }); 
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults > .up').click({ force: true,  multiple: true }); 
     
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults span.value.ng-binding')
             .should('have.text', '3');
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults > .down').click({ force: true,  multiple: true }); 
 
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults span.value.ng-binding')
             .should('have.text', '2');
@@ -125,12 +118,12 @@ describe("Test Homepage", () => {
     it('Children Increase Button', () => {
         cy.wait(3000)
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children > .up').click({ force: true,  multiple: true }); 
 
     
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children span.value.ng-binding')
             .should('have.text', '1');
@@ -139,12 +132,12 @@ describe("Test Homepage", () => {
     it('Children Decrease Button should not go lower than 0', () => {
         cy.wait(3000)
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children > .down').click({ force: true,  multiple: true }); 
 
     
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children span.value.ng-binding')
             .should('have.text', '0');
@@ -153,30 +146,30 @@ describe("Test Homepage", () => {
     it('Children Decrease', () => {
         cy.wait(3000)
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children > .up').click({ force: true,  multiple: true }); 
         
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children > .up').click({ force: true,  multiple: true }); 
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children > .up').click({ force: true,  multiple: true }); 
 
     
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children span.value.ng-binding')
             .should('have.text', '3');
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children > .down').click({ force: true,  multiple: true }); 
 
     
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#children span.value.ng-binding')
             .should('have.text', '2');
@@ -187,17 +180,17 @@ describe("Test Homepage", () => {
         const nextDate = new Date();
         nextDate.setDate(today.getDate() + 3);
 
-        cy.get(iframeSelector).its('0.contentDocument').find('#search-widget #check-in').should('exist').click();
+        cy.get(homepage.iframeSelector).its('0.contentDocument').find('#search-widget #check-in').should('exist').click();
         selectDateInIframe(today);
 
-        cy.get(iframeSelector).its('0.contentDocument').find('#search-widget #check-out').should('exist').click();
+        cy.get(homepage.iframeSelector).its('0.contentDocument').find('#search-widget #check-out').should('exist').click();
         selectDateInIframe(nextDate);
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('#adults > .up').click({ force: true,  multiple: true }); 
 
-        cy.get(iframeSelector)
+        cy.get(homepage.iframeSelector)
             .its('0.contentDocument')
             .find('button[ng-click="filter($root.endpoint)"]') 
             .should('be.visible') 
@@ -279,7 +272,7 @@ describe("Test Homepage", () => {
 
       it('Facebook Button Test', () => {
         homepage.facebookButton().should('be.visible').invoke('removeAttr', 'target').click();
-
+        const facebookPageUrl = homepage.facebookPageUrl
         // Handle cross-origin issues for Facebook
         cy.origin('https://www.facebook.com', { args: { facebookPageUrl } }, ({ facebookPageUrl }) => {
             cy.on('uncaught:exception', (err) => {
@@ -294,9 +287,8 @@ describe("Test Homepage", () => {
     });
 
     it('Twitter Button Test', () => {
-        const twitterPageUrl = "https://x.com/wix";
         homepage.twitterButton().should('be.visible').invoke('removeAttr', 'target').click();
-    
+        const twitterPageUrl = homepage.twitterPageUrl
         // Handle cross-origin issues for Twitter
         cy.origin('https://x.com', { args: { twitterPageUrl } }, ({ twitterPageUrl }) => {
             cy.on('uncaught:exception', (err) => {
@@ -311,9 +303,8 @@ describe("Test Homepage", () => {
     
 
     it('Pinterest Button Test', () => {
-        const pinterestPageUrl = "https://www.pinterest.com/wixcom/";
         homepage.pinterestButton().should('be.visible').invoke('removeAttr', 'target').click();
-    
+        const pinterestPageUrl = homepage.pinterestPageUrl
         // Handle cross-origin issues for Pinterest
         cy.origin('https://www.pinterest.com', { args: { pinterestPageUrl } }, ({ pinterestPageUrl }) => {
             cy.on('uncaught:exception', (err) => {
@@ -329,14 +320,14 @@ describe("Test Homepage", () => {
 
     it('Wix Button Test', () => {
         homepage.wixButton().should('be.visible').invoke('removeAttr', 'target').click();
-        cy.url().should('include', wixPageUrl);
+        cy.url().should('include', homepage.wixPageUrl);
     });
 
     it('Mail To Button Test', () => {
         homepage.contactMailButton().should('be.visible').then(($link) => {
             const href = $link.attr('href');
             expect(href).to.include('mailto:');
-            expect(href).to.include(linkAddress);
+            expect(href).to.include(homepage.linkAddress);
         });
     });
 

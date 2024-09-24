@@ -25,23 +25,66 @@ export const roomsURL = "https://ancabota09.wixsite.com/intern/rooms";
     wixButton: () => cy.get('#i71wwqnj > :nth-child(2) > span.wixui-rich-text__text > .wixui-rich-text__text'),
     contactMailButton: () => cy.get('#i71ww6nk > p:nth-child(1) > a'),
  
-    quickSearchFrame : '#i6kppi75 > .nKphmK'
+    quickSearchFrame : '#i6kppi75 > .nKphmK',
 
+    iframeSelector: 'iframe.nKphmK[title="Wix Hotels"]',
+    facebookPageUrl: "https://www.facebook.com/",
+    twitterPageUrl: "https://x.com/wix",
+    pinterestPageUrl: "https://www.pinterest.com/wixcom/",
+    wixPageUrl: "https://www.wix.com/?utm_campaign=vir_created_with",
+    linkAddress: "info@mysite.com"
     
   }
   
   export const roomsPage = {
-    cottageRoom: () => cy.get("#content > div > div.content-body > div > ul > li:nth-child(2) > div > div.info > div.bottom > button > span")
+    iframeSelector: '#i6klgqap_0 > .nKphmK',
+
+    standardRoom: () => 'li:nth-child(1) button.fancy-btn.s-button',
+    standardRoomTitle: () => 'li:nth-child(1) a.s-title',
+    standardRoomDesc: () => 'li:nth-child(1) p.text',
+    standardRoomPrice: () => 'li:nth-child(1) .price .value',
+    standardRoomFeatures: () => 'li:nth-child(1) ul.features',
+    
+    cottageRoom: () => 'li:nth-child(2) button.fancy-btn.s-button',
+    cottageRoomTitle: () => 'li:nth-child(2) a.s-title',
+    cottageRoomDesc: () => 'li:nth-child(2) p.text',
+    cottageRoomPrice: () => 'li:nth-child(2) .price .value',
+    cottageRoomFeatures: () => 'li:nth-child(2) ul.features',
+    
+    classicRoom: () => 'li:nth-child(3) button.fancy-btn.s-button',
+    classicRoomTitle: () => 'li:nth-child(3) a.s-title',
+    classicRoomDesc: () => 'li:nth-child(3) p.text',
+    classicRoomPrice: () => 'li:nth-child(3) .price .value',
+    classicRoomFeatures: () => 'li:nth-child(3) ul.features',
+
+    //on the specific room page
+    roomPageTitle: () => 'h2.s-title',
+
   }
   
   export const explorePage = {
-    twitterLink: () => cy.get('[href="http://www.twitter.com/wix"]')
+    welcomeParagraph: () => cy.get('#i6kvh3dl > .font_8 > .wixui-rich-text__text'),
+    chinaDescription: () => cy.get('#i6kv2te2 > [data-testid="inline-content"] > [data-testid="mesh-container-content"] > [data-testid="richTextElement"] > :nth-child(4)'),
+    ashburyDescription: () => cy.get('#i6kvbhma > [data-testid="inline-content"] > [data-testid="mesh-container-content"] > [data-testid="richTextElement"] > :nth-child(4)'),
+    goldenGateDescription: () => cy.get('#i6kvbkvz > [data-testid="inline-content"] > [data-testid="mesh-container-content"] > [data-testid="richTextElement"] > :nth-child(4)'),
+
+    chinaImg: () => cy.get('#img_i6kv4ak9 > img'),
+    ashburyImg: () => cy.get('#img_i6kvbhmc > img'),
+    goldenGateImg: () => cy.get('#img_i6kvbkw0_0 > img'),
+
+    templateWelcome: "I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. Feel free to drag and drop me anywhere you like on your page. I’m a great place for you to tell a story and let your users know a little more about you.",
+    templateDescription: "I'm a paragraph. Click here to add your own text and edit me. I’m a great place for you to tell a story and let your users know a little more about you."
+
   }
   
   export const contactPage = {
+    contactParagraph: () => cy.get('#i6ly3ckc_0'),
+
     nameField: () => cy.get("#input_comp-jxbsa1e9"),
     emailField: () => cy.get("#input_comp-jxbsa1em"),
     phoneField: () => cy.get("#input_comp-jxbsa1ev"),
     commentField: () => cy.get("#textarea_comp-jxbsa1f7"),
-    submitField: () => cy.get("#comp-jxbsa1fi > button")
+    submitField: () => cy.get("#comp-jxbsa1fi > button"),
+
+    submitFeedback: () => cy.get('#comp-jxbsa1dm > [data-testid="inline-content"] > [data-testid="mesh-container-content"] > [data-testid="richTextElement"] > .font_8 > .color_15')
   }

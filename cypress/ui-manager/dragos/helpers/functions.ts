@@ -35,6 +35,46 @@ export function generateRandomWords(length: number): string {
             .click();
 };
 
+export function selectDateCheckIn(date: Date) {
+  const formattedDate = formatDateForAriaLabel(date);
+
+  cy.get('#i6klgqap_0 > .nKphmK') // Assuming this is an iframe element
+    .then(($iframe) => {
+      const iframeContent = $iframe.contents().find('body'); // Access the iframe's content
+      cy.wrap(iframeContent) // Wrap the content so Cypress can act on it
+        .find('.calendar') // Look for the calendar element inside the iframe
+        .find(`button[aria-label="${formattedDate}"]`) // Find the button with the correct aria-label
+        .first().click(); // Click the date
+    });
+}
+
+export function selectDateCheckOut(date: Date) {
+  const formattedDate = formatDateForAriaLabel(date);
+
+  cy.get('#i6klgqap_0 > .nKphmK')
+    .then(($iframe) => {
+      const iframeContent = $iframe.contents().find('body');
+      cy.wrap(iframeContent)
+        .find('.calendar')
+        .should('be.visible') // Ensure the calendar is visible
+        .find(`button[aria-label="${formattedDate}"]`)
+        .then(($buttons) => {
+          // Check if the button exists and is not disabled
+          if ($buttons.length > 0) {
+            const button = $buttons.filter(':visible').first(); // Get the first visible button
+            if (button.length > 0) {
+              button.click(); // Click the visible button
+            } else {
+              cy.log(`Button for ${formattedDate} is not visible.`);
+            }
+          } else {
+            cy.log(`No button found for ${formattedDate}.`);
+          }
+        });
+    });
+}
+
+
   export function isDisabledDate(date: Date)  {
     const formattedDate = formatDateForAriaLabel(date);
 
