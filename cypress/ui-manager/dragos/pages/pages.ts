@@ -79,7 +79,9 @@ export const roomsURL = "https://ancabota09.wixsite.com/intern/rooms";
   
   export const contactPage = {
     contactParagraph: () => cy.get('#i6ly3ckc_0'),
-
+    mapFrame: () => cy.get('iframe[title="Google Maps"]'),
+    fullscreenButton: () => cy.get('iframe[title="Google Maps"]').its('0.contentDocument').find('#map_canvas > div > div.gm-style > div:nth-child(8) > button'),
+  
     nameField: () => cy.get("#input_comp-jxbsa1e9"),
     emailField: () => cy.get("#input_comp-jxbsa1em"),
     phoneField: () => cy.get("#input_comp-jxbsa1ev"),
