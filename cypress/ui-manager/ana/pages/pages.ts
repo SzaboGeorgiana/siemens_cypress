@@ -27,7 +27,24 @@ export const homePage = {
   export const explorePage = {
     twitterLink: () => cy.get('[href="http://www.twitter.com/wix"]'),
     title: () => cy.get('#i6ksjvsy > h2'),
-    textBlock: () => cy.get('#i6kvh3dl > p > span')
+    textBlock: () => cy.get('#i6kvh3dl > p > span'),
+    amenitiesTitle: () => cy.get('.HcOXKn.SxM0TO.QxJLC3.lq2cno.i6lurq9f.wixui-rich-text h2'),
+    cleaningImage : () => cy.get('#img_i6lvcm6t > img'),
+    cleaningTitle : () => cy.get('#i6lvcm6t_1'),
+    parkingImage: () => cy.get('#img_i6lvcgoi > img'),
+    parkingTitle: () => cy.get('#i6lvcgoj_0'),
+    furnishImage: () => cy.get('#img_i6lvciyu_0 > img'),
+    furnishTitle: () => cy.get('#i6lvciyu_1'),
+    wiFiImage: () => cy.get('#img_i6lvacuh > img'),
+    wiFiTitle: () => cy.get('#i6kugnss'),
+    airportImage: () => cy.get('#img_i6lvdfku > img'),
+    airportTitle: () => cy.get('#i6lvdfkt'),
+    exploreCityBlock: () => cy.get('#bgLayers_mediajg145x9g1 > div.LWbAav.Kv1aVt'),
+    exploreCityTitle: () => cy.get('#i6kvcfzq > h2'),
+    cityTitles: () => cy.get('p.font_7.wixui-rich-text__text'),
+    cityDescriptions: () => cy.get("[id^='i6kv'] p:nth-of-type(4)"),
+    cityImages: () => cy.get("[id^='img_i6kv'] img"),
+
   }
   
   export const contactPage = {
