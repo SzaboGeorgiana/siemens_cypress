@@ -1,7 +1,6 @@
 import { formatDateForSearch, selectDateInIframe, selectDateInIframe_rooms } from "../helpers/functions";
 
 export const explorePage = {
-  // explorehoteltitle: () => cy.get('#i6ksjvsy'),
   exploreParagraph: () => cy.get('#i6kvh3dl'),
   chinatownParagraph: () => cy.get('#i6kv3ge8 > p.wixui-rich-text__text.font_8'),
   haightandashburyParagraph: () => cy.get('#i6kvbhmb > p.wixui-rich-text__text.font_8'),
@@ -19,6 +18,58 @@ export const contactPage = {
   submitField: () => cy.get("#comp-jxbsa1fi > button"),
   confirmationMessage:()=> cy.get("#comp-jxbsa1fv > p > span"),
   paragraphElement:()=>cy.get("#i6ly3ckc_0")
+}
+
+export const chatBox = {
+  iframeSelector: () =>  cy.get('#comp-jr4sqg2g > .nKphmK'),
+  
+  chatButton: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('#minimized-chat'),
+
+  chatTextArea: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('textarea[aria-label="Type your message. Hit enter to submit."]'),
+
+  sendButton: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('button[data-hook="send-button"]'),
+
+  chatMessages: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('div[data-hook="chat-message"]'),
+
+  chatForm: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('form.zd18O'),
+
+  nameField: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('input#name'),
+
+  emailField: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('input#email'),
+
+  messageField: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('textarea#message'),
+
+  chatEmailError: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('#email-error'),
+
+  chatNameError: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('#name-error'),
+
+  submitField: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('button[data-hook="lcf-submit"]'),
+
+  formFeedback: () => chatBox.iframeSelector()
+            .its('0.contentDocument') 
+            .find('div[data-hook="lcf-thank-you"]')
 }
 
 
@@ -214,8 +265,13 @@ export const roomsPage = {
   searchButton: () => roomsPage.iframeSelector()
   .its('0.contentDocument')
   .find('form > ul > li.search-btn > button.search.s-button'),
-
-
+  resultBar:  ()=> roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('h2.s-title.resultbar'),
+  
+  roomsList:()=> roomsPage.iframeSelector()
+  .its('0.contentDocument')
+  .find('#content > div > div.content-body > div > ul > li'),
 
     // Verifică dacă widgetul de căutare este afișat
   setDataInCalendar:(checkInDate, checkOutDate) =>{
@@ -247,7 +303,7 @@ export const roomsPage = {
         const clickUntilMatch = () => {
           if (currentVal !== clicks) {
             roomsPage.adultsButtonIncrement()
-              .should('be.visible')
+              .should('be.visible').should('not.have.attr', 'disabled', 'disabled')
               .click()
               .then(() => {
                 roomsPage.adultValue().invoke('text').then((newVal) => {
@@ -289,7 +345,7 @@ export const roomsPage = {
         const clickUntilMatch = () => {
           if (currentVal !== clicks) {
             roomsPage.childrensButtonIncrement()
-              .should('be.visible')
+              .should('be.visible').should('not.have.attr', 'disabled', 'disabled')
               .click()
               .then(() => {
                 roomsPage.childrenValue().invoke('text').then((newVal) => {
