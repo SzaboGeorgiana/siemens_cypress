@@ -13,10 +13,10 @@ describe("Test ContactPage", () => {
   ]
 
   const wrongValues = [
-    {name:"Joa Michael", email:"badmail", phone: "0897546834", comm: generateRandomWords(32)},
-    {name:"8423158", email:"luck_Stark@test.com", phone: "04782783673", comm: generateRandomWords(21)},
-    {name:"Marcus Andron", email:"marcus.andr@test.com", phone: "Mark", comm: generateRandomWords(19)},
-    {name:" ", email:" ", phone: " ", comm: " "}
+    {name:"Joa Michael", email:"badmail", phone: "0897546834", comm: generateRandomWords(32)},//wrong mail
+    {name:"8423158", email:"luck_Stark@test.com", phone: "04782783673", comm: generateRandomWords(21)},//wrong name
+    {name:"Marcus Andron", email:"marcus.andr@test.com", phone: "Mark", comm: generateRandomWords(19)},//wrong phone
+    {name:" ", email:" ", phone: " ", comm: " "}//empty values
 
 
   ]
@@ -75,7 +75,16 @@ describe("Test ContactPage", () => {
     });
   });
 
-
+  it.only("Test Map Fullscreen", () => {
+    contactPage.mapFrame()
+      .should('have.attr', 'allowfullscreen');
+  
+    contactPage.fullscreenButton()
+      .should('exist')
+      .click() // fullscreen button
+      .should('have.attr', 'aria-pressed', 'true'); // Verify if in fullscreen mode
+  });
+  
 
 
 })

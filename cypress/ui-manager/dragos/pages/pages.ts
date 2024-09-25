@@ -38,6 +38,9 @@ export const roomsURL = "https://ancabota09.wixsite.com/intern/rooms";
   
   export const roomsPage = {
     iframeSelector: '#i6klgqap_0 > .nKphmK',
+    searchButton: () => 'button.search',
+    filterResults: () => 'h2.s-title.resultbar',
+    clearFiltersBtn: () => '#content > div > div.clearfix.content-head > h2 > a',
 
     standardRoom: () => 'li:nth-child(1) button.fancy-btn.s-button',
     standardRoomTitle: () => 'li:nth-child(1) a.s-title',
@@ -59,6 +62,24 @@ export const roomsURL = "https://ancabota09.wixsite.com/intern/rooms";
 
     //on the specific room page
     roomPageTitle: () => 'h2.s-title',
+    roomDescription: () => 'div.content-block.s-description > p', 
+    roomProperties: () => 'div.content-block.properties', 
+    roomAmenities: () => 'div.content-block.amenities', 
+    roomCheckInAndOut: () => 'div.content-block.terms', 
+    roomTerms: () => 'div.content-block.tac', 
+    readPolicies: () => 'li.policy-link a.policies',
+    roomPrice: () => '.heading .price', 
+    roomFinalPrice: () => 'tr.total td[ng-bind="paymentDetails.total | currency:paymentDetails.currency"]',
+
+    checkInCalendar: () => '#check-in', 
+    checkOutCalendar: () => '#check-out', 
+
+    adultIncrementButton: () => 'button.increment-adult',
+    adultDecrementButton: () => 'button.decrement-adult', 
+
+
+
+    templateDescription: "I'm a paragraph. Click here to add your own text and edit me. I’m a great place for you to tell a story and let your users know a little more about you."
 
   }
   
@@ -79,7 +100,9 @@ export const roomsURL = "https://ancabota09.wixsite.com/intern/rooms";
   
   export const contactPage = {
     contactParagraph: () => cy.get('#i6ly3ckc_0'),
-
+    mapFrame: () => cy.get('iframe[title="Google Maps"]'),
+    fullscreenButton: () => cy.get('iframe[title="Google Maps"]').its('0.contentDocument').find('#map_canvas > div > div.gm-style > div:nth-child(8) > button'),
+  
     nameField: () => cy.get("#input_comp-jxbsa1e9"),
     emailField: () => cy.get("#input_comp-jxbsa1em"),
     phoneField: () => cy.get("#input_comp-jxbsa1ev"),
@@ -87,4 +110,23 @@ export const roomsURL = "https://ancabota09.wixsite.com/intern/rooms";
     submitField: () => cy.get("#comp-jxbsa1fi > button"),
 
     submitFeedback: () => cy.get('#comp-jxbsa1dm > [data-testid="inline-content"] > [data-testid="mesh-container-content"] > [data-testid="richTextElement"] > .font_8 > .color_15')
+  }
+
+  export const chatFrame = {
+    iframeSelector: '#comp-jr4sqg2g > .nKphmK',
+    chatBtn: '#minimized-chat',
+    chat2: 'div.kBk8- button[data-hook="minimized-chat"]',
+    chatTextArea: 'textarea[aria-label="Type your message. Hit enter to submit."]',
+    sendBtn: 'button[data-hook="send-button"]',
+    chatMessages: 'div[data-hook="chat-message"]',
+
+    chatForm: 'form.zd18O',
+    inputName: 'input#name',
+    inputEmail: 'input#email',
+    inputMessage: 'textarea#message',
+    chatEmailError: '#email-error',
+    chatNameError: '#name-error',
+    submitForm: 'button[data-hook="lcf-submit"]',
+    formFeedback: 'div[data-hook="lcf-thank-you"]'
+    
   }
