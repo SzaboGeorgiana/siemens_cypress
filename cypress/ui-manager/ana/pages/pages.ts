@@ -21,7 +21,8 @@ export const homePage = {
   }
   
   export const roomsPage = {
-    cottageRoom: () => cy.get("#content > div > div.content-body > div > ul > li:nth-child(2) > div > div.info > div.bottom > button > span")
+    cottageRoom: () => cy.get("#content > div > div.content-body > div > ul > li:nth-child(2) > div > div.info > div.bottom > button > span"),
+    calendarCheckIn: () => cy.get('#hotel-container > section > div > div > form > ul > li.check-in > div.calendar-popup.s-field.s-separator.visible'),
   }
   
   export const explorePage = {

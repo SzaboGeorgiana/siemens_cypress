@@ -1,5 +1,6 @@
 import { contactPage } from "../../ui-manager/ana/pages/pages";
 import { homePage } from "../../ui-manager/ana/pages/pages";
+import { typeEmailInContactForm, typeNameInContactForm, typeMessageInContactForm,typePhoneInContactForm } from "../../ui-manager/ana/helpers/functions";
 
 const contactPageURL = "https://ancabota09.wixsite.com/intern/contact";
 
@@ -34,22 +35,6 @@ beforeEach(() => {
     cy.wait(2000);
     
   })
-
-  // it("Moving the Map Test", () => {
-  //   cy.visit(contactPageURL)
-
-  //   cy.wait(2000); 
-
-  //   cy.get('iframe[title="Google Maps"]').its('0.contentDocument')
-  //     .find('#map_canvas')
-  //     .should('exist')
-  //     .trigger('mousedown', { which: 1 })
-  //     .trigger('mousemove', { which: 1, x: 261, y: 0 })
-  //     .trigger('mouseup')
-    
-  //   cy.wait(2000); 
-    
-  // })
 
   it("Facebook Button Test", () => {
     cy.visit(contactPageURL)
@@ -125,15 +110,8 @@ beforeEach(() => {
     contactPage.submitButton()
       .should('be.visible');
 
-    contactPage.nameField()
-      .type('Ana')
-      .invoke('attr','value')
-      .should('equal','Ana');
-
-    contactPage.emailField()
-      .type('ana@gmail.com')
-      .invoke('attr','value')
-      .should('equal','ana@gmail.com');
+    typeNameInContactForm(contactPage.nameField, 'Ana');
+    typeEmailInContactForm(contactPage.emailField,'ana@gmail.com');
 
     contactPage.submitButton()
       .click();
@@ -153,20 +131,8 @@ beforeEach(() => {
     contactPage.submitButton()
       .should('be.visible');
 
-    contactPage.nameField()
-      .type('Ana')
-      .invoke('attr','value')
-      .should('equal','Ana');
-
-    contactPage.emailField()
-      .type('ana@gmail.com')
-      .invoke('attr','value')
-      .should('equal','ana@gmail.com');
-
-    contactPage.commentField()
-      .type('Test Message')
-      .invoke('val')
-      .should('equal','Test Message');
+    typeEmailInContactForm(contactPage.emailField,'ana@gmail.com');
+    typeMessageInContactForm(contactPage.commentField,'Test Message');
 
     contactPage.submitButton()
       .click();
@@ -186,25 +152,10 @@ beforeEach(() => {
     contactPage.submitButton()
       .should('be.visible');
 
-    contactPage.nameField()
-      .type('12345#@!gfa')
-      .invoke('attr','value')
-      .should('equal','12345#@!gfa');
-
-    contactPage.emailField()
-      .type('ana@gmail.com')
-      .invoke('attr','value')
-      .should('equal','ana@gmail.com');
-
-    contactPage.phoneField()
-      .type('0712345678')
-      .invoke('attr','value')
-      .should('equal','0712345678');
-
-    contactPage.commentField()
-      .type('Test Message')
-      .invoke('val')
-      .should('equal','Test Message');
+    typeNameInContactForm(contactPage.nameField, '12345#@!gfa');
+    typeEmailInContactForm(contactPage.emailField,'ana@gmail.com');
+    typePhoneInContactForm(contactPage.phoneField,'0712345678');
+    typeMessageInContactForm(contactPage.commentField,'Test Message');
 
     contactPage.submitButton()
       .click();
@@ -224,25 +175,10 @@ beforeEach(() => {
     contactPage.submitButton()
       .should('be.visible');
 
-    contactPage.nameField()
-      .type('Ana')
-      .invoke('attr','value')
-      .should('equal','Ana');
-
-    contactPage.emailField()
-      .type('mailgresit')
-      .invoke('attr','value')
-      .should('equal','mailgresit');
-
-    contactPage.phoneField()
-      .type('0712345678')
-      .invoke('attr','value')
-      .should('equal','0712345678');
-
-    contactPage.commentField()
-      .type('Test Message')
-      .invoke('val')
-      .should('equal','Test Message');
+    typeNameInContactForm(contactPage.nameField, 'Ana');
+    typeEmailInContactForm(contactPage.emailField,'mailgresit');
+    typePhoneInContactForm(contactPage.phoneField,'0712345678');
+    typeMessageInContactForm(contactPage.commentField,'Test Message');
 
     contactPage.submitButton()
       .click();
@@ -262,15 +198,10 @@ beforeEach(() => {
     contactPage.submitButton()
       .should('be.visible');
 
-    contactPage.nameField()
-      .type('Ana')
-      .invoke('attr','value')
-      .should('equal','Ana');
-
-    contactPage.emailField()
-      .type('mailgresit@')
-      .invoke('attr','value')
-      .should('equal','mailgresit@');
+    typeNameInContactForm(contactPage.nameField, 'Ana');
+    typeEmailInContactForm(contactPage.emailField,'mailgresit@');
+    typePhoneInContactForm(contactPage.phoneField,'0712345678');
+    typeMessageInContactForm(contactPage.commentField,'Test Message');
 
     contactPage.submitButton()
       .click();
@@ -290,15 +221,10 @@ beforeEach(() => {
     contactPage.submitButton()
       .should('be.visible');
 
-    contactPage.nameField()
-      .type('Ana')
-      .invoke('attr','value')
-      .should('equal','Ana');
-
-    contactPage.emailField()
-      .type('mailgresit@greseala@')
-      .invoke('attr','value')
-      .should('equal','mailgresit@greseala@');
+    typeNameInContactForm(contactPage.nameField, 'Ana');
+    typeEmailInContactForm(contactPage.emailField,'mailgresit@greseala@');
+    typePhoneInContactForm(contactPage.phoneField,'0712345678');
+    typeMessageInContactForm(contactPage.commentField,'Test Message');
 
     contactPage.submitButton()
       .click();
@@ -318,25 +244,10 @@ beforeEach(() => {
     contactPage.submitButton()
       .should('be.visible');
 
-    contactPage.nameField()
-      .type('Ana')
-      .invoke('attr','value')
-      .should('equal','Ana');
-
-    contactPage.emailField()
-      .type('mail@corect.com')
-      .invoke('attr','value')
-      .should('equal','mail@corect.com');
-
-    contactPage.phoneField()
-      .type('qwerty')
-      .invoke('attr','value')
-      .should('equal','qwerty');
-
-    contactPage.commentField()
-      .type('Test Message')
-      .invoke('val')
-      .should('equal','Test Message');
+    typeNameInContactForm(contactPage.nameField, 'Ana');
+    typeEmailInContactForm(contactPage.emailField,'mail@corect.com');
+    typePhoneInContactForm(contactPage.phoneField,'qwerty');
+    typeMessageInContactForm(contactPage.commentField,'Test Message');
 
     contactPage.submitButton()
       .click();
@@ -347,7 +258,7 @@ beforeEach(() => {
     
   })
 
-  it.only("Valid Data Test", () => {
+  it("Valid Data Test", () => {
     cy.visit(contactPageURL)
 
     contactPage.form()
@@ -356,25 +267,10 @@ beforeEach(() => {
     contactPage.submitButton()
       .should('be.visible');
 
-    contactPage.nameField()
-      .type('Ana')
-      .invoke('attr','value')
-      .should('equal','Ana');
-
-    contactPage.emailField()
-      .type('mail@corect.com')
-      .invoke('attr','value')
-      .should('equal','mail@corect.com');
-
-    contactPage.phoneField()
-      .type('0725754442')
-      .invoke('attr','value')
-      .should('equal','0725754442');
-
-    contactPage.commentField()
-      .type('Test Message')
-      .invoke('val')
-      .should('equal','Test Message');
+    typeNameInContactForm(contactPage.nameField, 'Ana');
+    typeEmailInContactForm(contactPage.emailField,'mail@corect.com');
+    typePhoneInContactForm(contactPage.phoneField,'0725754442');
+    typeMessageInContactForm(contactPage.commentField,'Test Message');
 
     contactPage.confirmationMessage()
       .should('not.be.visible');

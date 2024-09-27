@@ -343,7 +343,7 @@ beforeEach(() => {
       .should('have.text', (kidsNumber));
   })
 
-  it.only("Search Button Test", () => {
+  it("Search Button Test", () => {
 
     //check if search button exists
     let searchButton = cy.get('iframe.nKphmK[title="Wix Hotels"]').its('0.contentDocument').find('#search-widget > form > ul > li.search > button')

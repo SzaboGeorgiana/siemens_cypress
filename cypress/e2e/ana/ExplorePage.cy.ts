@@ -84,7 +84,7 @@ beforeEach(() => {
       
   }) 
 
-  it.only("Explore City Block Test", () => {
+  it("Explore City Block Test", () => {
     cy.visit(explorePageURL);
 
     explorePage.exploreCityBlock()
