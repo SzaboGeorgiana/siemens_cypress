@@ -128,13 +128,183 @@ export function textNotEqualRoomsPage(selector: string, number: string)  {
     
 };
 
-export function selectDayInCalendar(selector: string, date: Date)  {
-  
+export function selectDateInRoomPicker(selector, formattedDate) {
+
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+    .its('0.contentDocument')
+    .find(selector)
+    .should('be.visible')
+    .find(`button[aria-label="${formattedDate}"]`)
+    .click();
+}
+
+export function verifyDateRoomsPage(selector, expectedDate) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+    .its('0.contentDocument')
+    .find(selector)
+    .should('have.text', expectedDate);
+}
+
+export function navigateToFutureMonth(futureDate, today, navigateSelector) {
+  const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth()) - 1;
+
+  for (let i = 0; i < monthsToClick; i++) {
+    navigateMonthsInCalendarInRoomsPage(navigateSelector);
+  }
+}
+
+export function incrementAdultsNumber(desiredNumberOfAdults) {
+  let adultsNumber = 1; // Default initial number of adults
+
+  for (let i = 1; i < desiredNumberOfAdults; i++) {
+    cy.get('iframe.nKphmK[title="Book a Room"]')
+      .its('0.contentDocument')
+      .find('#adults > a.up')
+      .click(); // Increment the number of adults by clicking the "up" button
+    adultsNumber++;
+  }
+}
+
+export function verifyAdultsNumberInIframe(selector, expectedNumber) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+    .its('0.contentDocument')
+    .find(selector)
+    .invoke('text')
+    .should('equal', expectedNumber.toString());
+}
+
+export function incrementKidsNumber(desiredNumberOfKids) {
+  let kidsNumber = 0;
+    for (let i = 1; i <= desiredNumberOfKids; i++) {
+      cy.get('iframe.nKphmK[title="Book a Room"]').
+        its('0.contentDocument')
+        .find('#children > a.up')
+        .click();
+      kidsNumber++;
+    }
+}
+
+export function verifyKidsNumberInIframe(selector, expectedNumber) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+    .its('0.contentDocument')
+    .find(selector)
+    .invoke('text')
+    .should('equal', expectedNumber.toString());
+}
+
+export function verifyClearButtonExists(selector) {
+  //verify if clear button exists
   cy.get('iframe.nKphmK[title="Book a Room"]')
   .its('0.contentDocument')
   .find(selector)
   .should('be.visible')
-  .find(`button[aria-label="${Date}"]`)
   .click();
-    
-};
+}
+
+export function verifyErrorMessageExists(selector) {
+   //error message
+   cy.get('iframe.nKphmK[title="Book a Room"]')
+   .its('0.contentDocument')
+   .find(selector)
+   .should('be.visible')
+}
+
+export function verifyTryMessageExists(selector) {
+  //try another search message
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+  .its('0.contentDocument')
+  .find(selector)
+  .should('be.visible')
+  .should('contain.text', "We can’t seem to find what you’re looking for. Try another search.");
+}
+
+export function searchAgainButtonClick(selector) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+      .its('0.contentDocument')
+      .find(selector)
+      .should('be.visible')
+      .click();
+}
+
+export function verifyRoomTitle(selector: string, roomTitle: string) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+      .its('0.contentDocument')
+      .find(selector)
+      .should('be.visible')
+      .invoke('text')
+      .then(text => text.trim()) // Trim whitespace because it contains /n
+      .should('equal',roomTitle);
+}
+
+export function verifyRoomProperties(selector) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+      .its('0.contentDocument')
+      .find(selector)
+      .should('be.visible')
+      .invoke('text') 
+          .then((propertiesText) => {
+            const trimmedText = propertiesText.trim();
+            expect(trimmedText).to.not.be.empty; 
+            expect(trimmedText).to.contain("Accommodates","a room must specify the number of accomodates");
+            expect(trimmedText).to.contain("Beds","a room must provide beds info");
+          });
+}
+
+export function verifyRoomAmenities(selector, amenities) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+  .its('0.contentDocument')
+  .find(selector)
+  .should('be.visible')
+  .invoke('text') 
+      .then((propertiesText) => {
+        const trimmedText = propertiesText.trim();
+        expect(trimmedText).to.not.be.empty; 
+        
+        amenities.forEach((amenity) => {
+          expect(trimmedText).to.contain(amenity, `The room should have ${amenity}`); // Verificăm dacă fiecare amenitate există
+        });
+      });
+}
+
+export function verifyRoomCheckInCheckOut(selector) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+      .its('0.contentDocument')
+      .find(selector)
+      .should('be.visible')
+      .invoke('text') 
+          .then((propertiesText) => {
+            const trimmedText = propertiesText.trim();
+            expect(trimmedText).to.not.be.empty; 
+            expect(trimmedText).to.contain("Check-In",`A room should have a Check-In hour`);
+            expect(trimmedText).to.contain("Check-Out",`A room should have a Check-Out hour`);
+          });
+}
+
+export function verifyRoomTerms(selector) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+      .its('0.contentDocument')
+      .find(selector)
+      .should('be.visible')
+      .invoke('text') 
+          .then((propertiesText) => {
+            const trimmedText = propertiesText.trim();
+            expect(trimmedText).to.not.be.empty; 
+            expect(trimmedText).to.contain("Minimum nights","A room should have a minimim number of nights term");
+            expect(trimmedText).to.contain("3","A room should have a minimim number of nights set to 3");
+          });
+}
+
+export function verifyRoomPolicies(selector) {
+  cy.get('iframe.nKphmK[title="Book a Room"]')
+      .its('0.contentDocument')
+      .find(selector)
+      .should('be.visible')
+      .then(($link) => {
+        $link.removeAttr('target');
+        cy.wrap($link).click();
+        cy.wait(2000)
+        cy.url().should('not.eq', 'https://ancabota09.wixsite.com/intern/rooms/rooms/afda6ba1-efd1-4432-bd42-dd678bd4beb4'); // Ensure URL has changed
+        cy.url().should('include', '/terms');
+    })
+}
+

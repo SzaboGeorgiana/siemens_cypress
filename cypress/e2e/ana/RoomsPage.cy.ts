@@ -1,12 +1,16 @@
 import { roomsPage } from "../../ui-manager/ana/pages/pages";
 import { homePage } from "../../ui-manager/ana/pages/pages";
-import { selectDateInIframe } from "../../ui-manager/ana/helpers/functions";
+import { incrementAdultsNumber, selectDateInIframe } from "../../ui-manager/ana/helpers/functions";
 import { formatDateForSearch } from "../../ui-manager/ana/helpers/functions";
 import { navigateMonthsInCalendarInRoomsPage } from "../../ui-manager/ana/helpers/functions";
 import { formatDateForAriaLabel } from "../../ui-manager/ana/helpers/functions";
 import { roomButton, clickElementRoomsPage, elementVisibilityRoomsPage} from "../../ui-manager/ana/helpers/functions";
 import { textEqualRoomsPage, textNotEqualRoomsPage } from "../../ui-manager/ana/helpers/functions";
-
+import { selectDateInRoomPicker, verifyDateRoomsPage, navigateToFutureMonth } from "../../ui-manager/ana/helpers/functions";
+import {verifyAdultsNumberInIframe,verifyKidsNumberInIframe,incrementKidsNumber} from "../../ui-manager/ana/helpers/functions";
+import { verifyClearButtonExists, verifyErrorMessageExists,verifyTryMessageExists } from "../../ui-manager/ana/helpers/functions";
+import { searchAgainButtonClick, verifyRoomTitle, verifyRoomProperties } from "../../ui-manager/ana/helpers/functions";
+import { verifyRoomAmenities, verifyRoomCheckInCheckOut, verifyRoomTerms, verifyRoomPolicies } from "../../ui-manager/ana/helpers/functions";
 
 const roomsPageURL = "https://ancabota09.wixsite.com/intern/rooms";
 
@@ -88,7 +92,7 @@ beforeEach(() => {
     textEqualRoomsPage('#children .value',stringKidsNumber);
   })
 
-  it.only("Search Button Valid Input Test", () => {
+  it("Search Button Valid Input Test", () => {
     cy.visit(roomsPageURL);
     cy.wait(2000);
     //check if search button exists
@@ -105,71 +109,27 @@ beforeEach(() => {
     clickElementRoomsPage('#check-in');
     
     cy.wait(2000);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-         
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_in-value')
-      .should('have.text', (formattedDateForText));
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+    verifyDateRoomsPage('#check_in-value',formattedDateForText);
 
     //select a day after 10 days for checkout
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 10);
     formattedDate = formatDateForAriaLabel(futureDate);
-
-    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
-
-    for (let i = 0; i < monthsToClick; i++) {
-      navigateMonthsInCalendarInRoomsPage('.navigate-right');
-    }
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-
+    navigateToFutureMonth(futureDate, today,'.navigate-right');
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
     formattedDateForText = formatDateForSearch(futureDate);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_out-value')
-      .should('have.text', (formattedDateForText));
+    verifyDateRoomsPage('#check_out-value',formattedDateForText);
 
     //number of adults 3
     let desiredNumberOfAdults = 3;
-    let adultsNumber = 1;
-    //increment the adults number test
-    for (let i = 1; i < desiredNumberOfAdults; i++) {
-      cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#adults > a.up')
-        .click();
-      adultsNumber++;
-    }
-
-    let stringAdultsNumber = adultsNumber.toString();
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#adults .value')
-      .invoke('text')
-      .should('equal',stringAdultsNumber);
-
+    incrementAdultsNumber(desiredNumberOfAdults)
+    verifyAdultsNumberInIframe('#adults .value',desiredNumberOfAdults)
+  
     //number of kids 0
     let desiredNumberOfKids = 1;
-    let kidsNumber = 0;
-    //increment the adults number test
-    for (let i = 1; i <= desiredNumberOfKids; i++) {
-      cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#children > a.up')
-        .click();
-      kidsNumber++;
-    }
-
-    let stringKidsNumber = kidsNumber.toString();
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#children .value')
-      .invoke('text')
-      .should('equal',stringKidsNumber);
+    incrementKidsNumber(desiredNumberOfKids);
+    verifyKidsNumberInIframe('#children .value',desiredNumberOfKids);
 
     searchButton.click();
     cy.url().should("contains", "https://ancabota09.wixsite.com/intern/rooms")
@@ -185,94 +145,40 @@ beforeEach(() => {
         .find('#hotel-container > section > div > div > form > ul > li.search-btn > button > span:nth-child(1)')
         .should('be.visible')
 
-    //select today for check in
-    const today = new Date();
-    today.setDate(today.getDate());
-    let formattedDateForText = formatDateForSearch(today);
-    let formattedDate = formatDateForAriaLabel(today);
+     //select today for check in
+     const today = new Date();
+     today.setDate(today.getDate());
+     let formattedDateForText = formatDateForSearch(today);
+     let formattedDate = formatDateForAriaLabel(today);
+     clickElementRoomsPage('#check-in');
+     
+     cy.wait(2000);
+     selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+     verifyDateRoomsPage('#check_in-value',formattedDateForText);
+ 
+     //select a day after 10 days for checkout
+     const futureDate = new Date();
+     futureDate.setDate(futureDate.getDate() + 10);
+     formattedDate = formatDateForAriaLabel(futureDate);
+     navigateToFutureMonth(futureDate, today,'.navigate-right');
+     selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+     formattedDateForText = formatDateForSearch(futureDate);
+     verifyDateRoomsPage('#check_out-value',formattedDateForText);
+ 
+     //number of adults 3
+     let desiredNumberOfAdults = 3;
+     incrementAdultsNumber(desiredNumberOfAdults)
+     verifyAdultsNumberInIframe('#adults .value',desiredNumberOfAdults)
+   
+     //number of kids 1
+     let desiredNumberOfKids = 1;
+     incrementKidsNumber(desiredNumberOfKids);
+     verifyKidsNumberInIframe('#children .value',desiredNumberOfKids);
 
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-        .its('0.contentDocument')
-        .find('#check-in')
-        .click()
-    
-    cy.wait(2000);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-         
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_in-value')
-      .should('have.text', (formattedDateForText));
-
-    //select a day after 10 days for checkout
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 10);
-    formattedDate = formatDateForAriaLabel(futureDate);
-
-    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
-
-    for (let i = 0; i < monthsToClick; i++) {
-      navigateMonthsInCalendarInRoomsPage('.navigate-right');
-    }
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-
-    formattedDateForText = formatDateForSearch(futureDate);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_out-value')
-      .should('have.text', (formattedDateForText));
-
-    //number of adults 3
-    let desiredNumberOfAdults = 3;
-    let adultsNumber = 1;
-    //increment the adults number test
-    for (let i = 1; i < desiredNumberOfAdults; i++) {
-      cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#adults > a.up')
-        .click();
-      adultsNumber++;
-    }
-
-    let stringAdultsNumber = adultsNumber.toString();
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#adults .value')
-      .invoke('text')
-      .should('equal',stringAdultsNumber);
-
-    //number of kids 0
-    let desiredNumberOfKids = 1;
-    let kidsNumber = 0;
-    //increment the adults number test
-    for (let i = 1; i <= desiredNumberOfKids; i++) {
-      cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#children > a.up')
-        .click();
-      kidsNumber++;
-    }
-
-    let stringKidsNumber = kidsNumber.toString();
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#children .value')
-      .invoke('text')
-      .should('equal',stringKidsNumber);
-
-    searchButton.click();
-    cy.url().should("contains", "https://ancabota09.wixsite.com/intern/rooms")
-
-   cy.get('iframe.nKphmK[title="Book a Room"]')
-        .its('0.contentDocument')
-        .find('.back.s-button-color')
-        .should('be.visible')
-        .click();
-
-    cy.url().should("equal", "https://ancabota09.wixsite.com/intern/rooms/rooms")
+     searchButton.click();
+     cy.url().should("contains", "https://ancabota09.wixsite.com/intern/rooms")
+     verifyClearButtonExists('.back.s-button-color');
+     cy.url().should("equal", "https://ancabota09.wixsite.com/intern/rooms/rooms")
 
   })
 
@@ -358,48 +264,22 @@ beforeEach(() => {
     today.setDate(today.getDate());
     let formattedDateForText = formatDateForSearch(today);
     let formattedDate = formatDateForAriaLabel(today);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-        .its('0.contentDocument')
-        .find('#check-in')
-        .click()
-    
+    clickElementRoomsPage('#check-in');
+     
     cy.wait(2000);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-         
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_in-value')
-      .should('have.text', (formattedDateForText));
-
-    //select tomorrow checkout
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+    verifyDateRoomsPage('#check_in-value',formattedDateForText);
+ 
+    //select a day after 1 day for checkout
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 1);
     formattedDate = formatDateForAriaLabel(futureDate);
-
-    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
-
-    for (let i = 0; i < monthsToClick; i++) {
-      navigateMonthsInCalendarInRoomsPage('.navigate-right');
-    }
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-
+    navigateToFutureMonth(futureDate, today,'.navigate-right');
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
     formattedDateForText = formatDateForSearch(futureDate);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_out-value')
-      .should('have.text', (formattedDateForText));
-
+    verifyDateRoomsPage('#check_out-value',formattedDateForText);
     //number of adults 1
+
     searchButton.click();
     cy.url().should("equals", "https://ancabota09.wixsite.com/intern/rooms/rooms/%3FcheckIn%3D1724198400000%26checkOut%3D1724457600000%26adults%3D1%26children%3D0");
 
@@ -414,60 +294,30 @@ beforeEach(() => {
         .find('#hotel-container > section > div > div > form > ul > li.search-btn > button > span:nth-child(1)')
         .should('be.visible')
 
-    //select today for check in
-    const today = new Date();
-    today.setDate(today.getDate());
-    let formattedDateForText = formatDateForSearch(today);
-    let formattedDate = formatDateForAriaLabel(today);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-        .its('0.contentDocument')
-        .find('#check-in')
-        .click()
-    
-    cy.wait(2000);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-         
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_in-value')
-      .should('have.text', (formattedDateForText));
-
-    //select a date after 181 days
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 181);
-    formattedDate = formatDateForAriaLabel(futureDate);
-
-    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
-
-    for (let i = 0; i < monthsToClick; i++) {
-      navigateMonthsInCalendarInRoomsPage('.navigate-right');
-    }
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-
-    formattedDateForText = formatDateForSearch(futureDate);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_out-value')
-      .should('have.text', (formattedDateForText));
-
+     //select today for check in
+     const today = new Date();
+     today.setDate(today.getDate());
+     let formattedDateForText = formatDateForSearch(today);
+     let formattedDate = formatDateForAriaLabel(today);
+     clickElementRoomsPage('#check-in');
+      
+     cy.wait(2000);
+     selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+     verifyDateRoomsPage('#check_in-value',formattedDateForText);
+  
+     //select a day after 181 day for checkout
+     const futureDate = new Date();
+     futureDate.setDate(futureDate.getDate() + 181);
+     formattedDate = formatDateForAriaLabel(futureDate);
+     navigateToFutureMonth(futureDate, today,'.navigate-right');
+     selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+     formattedDateForText = formatDateForSearch(futureDate);
+     verifyDateRoomsPage('#check_out-value',formattedDateForText);
     //number of adults 1
 
     searchButton.click();
     //error message
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-    .its('0.contentDocument')
-    .find('.alert.alert-danger.clearfix')
-    .should('be.visible')
+    verifyErrorMessageExists('.alert.alert-danger.clearfix');
 
   })
 
@@ -480,75 +330,36 @@ beforeEach(() => {
         .find('#hotel-container > section > div > div > form > ul > li.search-btn > button > span:nth-child(1)')
         .should('be.visible')
 
+    
     //select today for check in
     const today = new Date();
     today.setDate(today.getDate());
     let formattedDateForText = formatDateForSearch(today);
     let formattedDate = formatDateForAriaLabel(today);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-        .its('0.contentDocument')
-        .find('#check-in')
-        .click()
-    
+    clickElementRoomsPage('#check-in');
+     
     cy.wait(2000);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-         
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_in-value')
-      .should('have.text', (formattedDateForText));
-
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+    verifyDateRoomsPage('#check_in-value',formattedDateForText);
+ 
     //select a day after 10 days for checkout
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 10);
     formattedDate = formatDateForAriaLabel(futureDate);
-
-    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
-
-    for (let i = 0; i < monthsToClick; i++) {
-      navigateMonthsInCalendarInRoomsPage('.navigate-right');
-    }
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-
+    navigateToFutureMonth(futureDate, today,'.navigate-right');
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
     formattedDateForText = formatDateForSearch(futureDate);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_out-value')
-      .should('have.text', (formattedDateForText));
-
+    verifyDateRoomsPage('#check_out-value',formattedDateForText);
+ 
     //number of adults 8
     let desiredNumberOfAdults = 8;
-    let adultsNumber = 1;
-    //increment the adults number test
-    for (let i = 1; i < desiredNumberOfAdults; i++) {
-      cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#adults > a.up')
-        .click();
-      adultsNumber++;
-    }
-
-    let stringAdultsNumber = adultsNumber.toString();
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#adults .value')
-      .invoke('text')
-      .should('equal',stringAdultsNumber);
+    incrementAdultsNumber(desiredNumberOfAdults)
+    verifyAdultsNumberInIframe('#adults .value',desiredNumberOfAdults)
+   
     //number of kids 0
     searchButton.click();
-    
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('p[stranslate="rooms.error.SORRY"] > span.strans')
-         .should('be.visible')
-         .should('contain.text', "We can’t seem to find what you’re looking for. Try another search.");
+    //try another search message
+    verifyTryMessageExists('p[stranslate="rooms.error.SORRY"] > span.strans');
   })
 
   it("Search 2 Adults 2 Kids Test", () => {
@@ -565,85 +376,202 @@ beforeEach(() => {
     today.setDate(today.getDate());
     let formattedDateForText = formatDateForSearch(today);
     let formattedDate = formatDateForAriaLabel(today);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-        .its('0.contentDocument')
-        .find('#check-in')
-        .click()
-    
+    clickElementRoomsPage('#check-in');
+     
     cy.wait(2000);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-         
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_in-value')
-      .should('have.text', (formattedDateForText));
-
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+    verifyDateRoomsPage('#check_in-value',formattedDateForText);
+ 
     //select a day after 10 days for checkout
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 10);
     formattedDate = formatDateForAriaLabel(futureDate);
-
-    const monthsToClick = (futureDate.getFullYear() - today.getFullYear()) * 12 + (futureDate.getMonth() - today.getMonth());
-
-    for (let i = 0; i < monthsToClick; i++) {
-      navigateMonthsInCalendarInRoomsPage('.navigate-right');
-    }
-
-    cy.get('iframe.nKphmK[title="Book a Room"]')
-         .its('0.contentDocument')
-         .find('.calendar-popup.s-field.s-separator.visible')
-         .should('be.visible')
-         .find(`button[aria-label="${formattedDate}"]`)
-         .click();
-
+    navigateToFutureMonth(futureDate, today,'.navigate-right');
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
     formattedDateForText = formatDateForSearch(futureDate);
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#check_out-value')
-      .should('have.text', (formattedDateForText));
-
+    verifyDateRoomsPage('#check_out-value',formattedDateForText);
+ 
     //number of adults 2
     let desiredNumberOfAdults = 2;
-    let adultsNumber = 1;
-    //increment the adults number test
-    for (let i = 1; i < desiredNumberOfAdults; i++) {
-      cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#adults > a.up')
-        .click();
-      adultsNumber++;
-    }
-
-    let stringAdultsNumber = adultsNumber.toString();
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#adults .value')
-      .invoke('text')
-      .should('equal',stringAdultsNumber);
-
+    incrementAdultsNumber(desiredNumberOfAdults)
+    verifyAdultsNumberInIframe('#adults .value',desiredNumberOfAdults)
+   
     //number of kids 2
     let desiredNumberOfKids = 2;
-    let kidsNumber = 0;
-    //increment the adults number test
-    for (let i = 1; i <= desiredNumberOfKids; i++) {
-      cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#children > a.up')
-        .click();
-      kidsNumber++;
-    }
-
-    let stringKidsNumber = kidsNumber.toString();
-
-    cy.get('iframe.nKphmK[title="Book a Room"]').its('0.contentDocument').find('#children .value')
-      .invoke('text')
-      .should('equal',stringKidsNumber);
+    incrementKidsNumber(desiredNumberOfKids);
+    verifyKidsNumberInIframe('#children .value',desiredNumberOfKids);
 
     searchButton.click();
+    //try another search message
+    verifyTryMessageExists('p[stranslate="rooms.error.SORRY"] > span.strans');
+  })
+
+  it("Search Again Button Test", () => {
+    cy.visit(roomsPageURL);
+    cy.wait(2000);
+    //check if search button exists
+    let searchButton = cy.get('iframe.nKphmK[title="Book a Room"]')
+        .its('0.contentDocument')
+        .find('#hotel-container > section > div > div > form > ul > li.search-btn > button > span:nth-child(1)')
+        .should('be.visible')
+
+    //select today for check in
+    const today = new Date();
+    today.setDate(today.getDate());
+    let formattedDateForText = formatDateForSearch(today);
+    let formattedDate = formatDateForAriaLabel(today);
+    clickElementRoomsPage('#check-in');
+     
+    cy.wait(2000);
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+    verifyDateRoomsPage('#check_in-value',formattedDateForText);
+ 
+    //select a day after 5 days for checkout
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 5);
+    formattedDate = formatDateForAriaLabel(futureDate);
+    navigateToFutureMonth(futureDate, today,'.navigate-right');
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+    formattedDateForText = formatDateForSearch(futureDate);
+    verifyDateRoomsPage('#check_out-value',formattedDateForText);
+ 
+    //number of adults 2
+    let desiredNumberOfAdults = 2;
+    incrementAdultsNumber(desiredNumberOfAdults)
+    verifyAdultsNumberInIframe('#adults .value',desiredNumberOfAdults)
+   
+    //number of kids 1
+    let desiredNumberOfKids = 1;
+    incrementKidsNumber(desiredNumberOfKids);
+    verifyKidsNumberInIframe('#children .value',desiredNumberOfKids);
+
+    searchButton.click();
+    verifyTryMessageExists('p[stranslate="rooms.error.SORRY"] > span.strans');
+    searchAgainButtonClick('.search.s-button');
+    verifyTryMessageExists('p[stranslate="rooms.error.SORRY"] > span.strans');
+    
+  })
+
+  it("Amenities Test",() => {
+    cy.visit(roomsPageURL);
+    cy.wait(2000);
+
     cy.get('iframe.nKphmK[title="Book a Room"]')
       .its('0.contentDocument')
-      .find('p[stranslate="rooms.error.SORRY"] > span.strans')
-      .should('be.visible')
-      .should('contain.text', "We can’t seem to find what you’re looking for. Try another search.");
-
+      .find('ul.amenities.s-separator li')
+      .each(($amenity) => {
+        const amenityText = $amenity.text().trim();
+        cy.wrap($amenity) 
+          .trigger('mouseenter') 
+          .find('[tooltip]') 
+          .invoke('attr', 'tooltip') 
+          .should('equal', amenityText);
+      });
   })
+
+  it("Book Now Button Test",() => {
+    cy.visit(roomsPageURL);
+    cy.wait(2000);
+
+    roomButton('#content > div > div.content-body > div > ul > li:nth-child(1) > div > div.info > div.description > h3 > a > span');
+    cy.url().should("equal", "https://ancabota09.wixsite.com/intern/rooms/rooms/afda6ba1-efd1-4432-bd42-dd678bd4beb4");
+    
+    //select today for check in
+    const today = new Date();
+    today.setDate(today.getDate());
+    let formattedDateForText = formatDateForSearch(today);
+    let formattedDate = formatDateForAriaLabel(today);
+    clickElementRoomsPage('#check-in');
+     
+    cy.wait(2000);
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+    verifyDateRoomsPage('#check_in-value',formattedDateForText);
+ 
+    //select a day after 5 days for checkout
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 5);
+    formattedDate = formatDateForAriaLabel(futureDate);
+    navigateToFutureMonth(futureDate, today,'.navigate-right');
+    selectDateInRoomPicker('.calendar-popup.s-field.s-separator.visible',formattedDate);
+    formattedDateForText = formatDateForSearch(futureDate);
+    verifyDateRoomsPage('#check_out-value',formattedDateForText);
+ 
+    //number of adults 2
+    let desiredNumberOfAdults = 2;
+    incrementAdultsNumber(desiredNumberOfAdults)
+    verifyAdultsNumberInIframe('#adults .value',desiredNumberOfAdults)
+
+    //Book Now Button
+    cy.get('iframe.nKphmK[title="Book a Room"]')
+      .its('0.contentDocument')
+      .find('#singleroom > div.widget.s-separator.s-background2.breakdown-widget > div.booknow > span > button')
+      .should('be.visible')
+      .trigger('mouseenter') 
+      .invoke('attr', 'tooltip') 
+      .should('equal', 'Please contact the hotel directly to book your room.');
+     
+  })
+
+  it('Standard Room Details Test', () => {
+    cy.visit(roomsPageURL);
+    cy.wait(2000);
+
+    roomButton('#content > div > div.content-body > div > ul > li:nth-child(1) > div > div.info > div.description > h3 > a > span');
+    cy.url().should("equal", "https://ancabota09.wixsite.com/intern/rooms/rooms/afda6ba1-efd1-4432-bd42-dd678bd4beb4");
+
+    //title
+    verifyRoomTitle('.s-title',"Standard Suite");
+    //room description
+    //properties
+    verifyRoomProperties('.content-block.properties.s-separator.clearfix > div > ul > li');
+    //amenities
+    const amenities = ["A/C", "Shower", "Bath", "TV", "Telephone"];
+    verifyRoomAmenities('.content-block.amenities.s-separator.clearfix > ul > li', amenities);
+    //Check In and Check Out
+    verifyRoomCheckInCheckOut('.content-block.s-separator.terms.clearfix > ul > li');
+    //Terms
+    verifyRoomTerms('#singleroom > div.singleroom.clearfix > div:nth-child(3) > div.content-block.s-separator.tac.clearfix > ul > li:nth-child(1) > div > div');
+    //policies button test
+    verifyRoomPolicies('.policies');
+
+});
+
+it('Cottage Room Details Test', () => {
+  cy.visit(roomsPageURL);
+  cy.wait(2000);
+
+  roomButton('#content > div > div.content-body > div > ul > li:nth-child(2) > div > div.info > div.description > h3 > a > span');
+  cy.url().should("equal", "https://ancabota09.wixsite.com/intern/rooms/rooms/4e2820f3-0564-4bd0-9258-e7594d617297");
+
+  //title
+  verifyRoomTitle('.s-title',"Cottage");
+  verifyRoomProperties('.content-block.properties.s-separator.clearfix > div > ul > li');
+  const amenities = ["A/C", "Shower", "TV"];
+  verifyRoomAmenities('.content-block.amenities.s-separator.clearfix > ul > li', amenities);
+  verifyRoomCheckInCheckOut('.content-block.s-separator.terms.clearfix > ul > li');
+  verifyRoomTerms('#singleroom > div.singleroom.clearfix > div:nth-child(3) > div.content-block.s-separator.tac.clearfix > ul > li:nth-child(1) > div > div');
+  verifyRoomPolicies('.policies');
+
+});
+
+it.only('Clasic App Room Details Test', () => {
+  cy.visit(roomsPageURL);
+  cy.wait(2000);
+
+  roomButton('#content > div > div.content-body > div > ul > li:nth-child(3) > div > div.info > div.description > h3 > a > span');
+  cy.url().should("equal", "https://ancabota09.wixsite.com/intern/rooms/rooms/1739582a-003e-49e7-a9e6-b6fdb55a9027");
+
+  //title
+  verifyRoomTitle('.s-title',"Classic App");
+  verifyRoomProperties('.content-block.properties.s-separator.clearfix > div > ul > li');
+  const amenities = ["A/C", "TV","Minibar","Telephone","WiFi","Safe","Shower","Bath"];
+  verifyRoomAmenities('.content-block.amenities.s-separator.clearfix > ul > li', amenities);
+  verifyRoomCheckInCheckOut('.content-block.s-separator.terms.clearfix > ul > li');
+  verifyRoomTerms('#singleroom > div.singleroom.clearfix > div:nth-child(3) > div.content-block.s-separator.tac.clearfix > ul > li:nth-child(1) > div > div');
+  verifyRoomPolicies('.policies');
+
+});
+
+
+
 
