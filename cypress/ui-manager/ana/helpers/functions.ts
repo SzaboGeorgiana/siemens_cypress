@@ -308,3 +308,74 @@ export function verifyRoomPolicies(selector) {
     })
 }
 
+export function openChat() {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+  .its('0.contentDocument')
+  .find('#minimized-chat')
+  .should('exist')
+  .click()
+}
+
+export function verifyChatText(selector, text) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('exist')
+        .should('have.text',text);
+}
+
+export function chatTypeMessage(selector, message) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('exist')
+        .type(message);
+}
+
+export function clickSendButton(selector) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('be.visible')
+        .click();
+}
+
+export function formIsSentBack(selector) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('be.visible')
+}
+
+export function formTypeName(selector, name) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('exist')
+        .type(name);
+}
+
+export function formTypeEmail(selector, email) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('exist')
+        .type(email);
+}
+
+export function formTypeMessage(selector, message) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('exist')
+        .type(message);
+}
+
+export function clickSubmitButton(selector) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('be.visible')
+        .click();
+}
+
