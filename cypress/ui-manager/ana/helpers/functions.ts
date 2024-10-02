@@ -379,3 +379,34 @@ export function clickSubmitButton(selector) {
         .click();
 }
 
+export function formClearName(selector) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('exist')
+        .clear();
+}
+
+export function formClearEmail(selector) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('exist')
+        .clear(); 
+}
+
+export function chatElementIsVisible(selector) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('be.visible');
+}
+
+export function chatClickOnElement(selector) {
+  cy.get('iframe.nKphmK[title="Wix Chat"]')
+        .its('0.contentDocument')
+        .find(selector)
+        .should('be.visible')
+        .click();
+}
+
