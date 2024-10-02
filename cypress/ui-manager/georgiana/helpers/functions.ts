@@ -9,16 +9,16 @@ export function generateRandomWords(length: number): string {
       randomWords += characters[randomIndex];
     }
     return randomWords;
-  }
+};
 
-  const formatDateForAriaLabel = (date: Date): string => {
+const formatDateForAriaLabel = (date: Date): string => {
     const day = date.getDate();
     const dayName = date.toLocaleDateString('en-GB', { weekday: 'long' });
     const monthName = date.toLocaleDateString('en-GB', { month: 'long' });
     const year = date.getFullYear();
   
     return `${day}, ${dayName} ${monthName} ${year}`;
-  };
+};
   
 export function selectDateInIframe(date: Date)  {
   const formattedDate = formatDateForAriaLabel(date);
@@ -28,6 +28,7 @@ export function selectDateInIframe(date: Date)  {
           .find(`button[aria-label="${formattedDate}"]`)
           .click();
 };
+
 export function selectDateInIframe_rooms(date: Date, ok: boolean)  {
   const formattedDate = formatDateForAriaLabel(date);
 

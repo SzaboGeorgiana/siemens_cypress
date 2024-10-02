@@ -22,54 +22,20 @@ export const contactPage = {
 
 export const chatBox = {
   iframeSelector: () =>  cy.get('#comp-jr4sqg2g > .nKphmK'),
-  
-  chatButton: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('#minimized-chat'),
+  iframeDoc: ()=> chatBox.iframeSelector().its('0.contentDocument'),
 
-  chatTextArea: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('textarea[aria-label="Type your message. Hit enter to submit."]'),
-
-  sendButton: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('button[data-hook="send-button"]'),
-
-  chatMessages: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('div[data-hook="chat-message"]'),
-
-  chatForm: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('form.zd18O'),
-
-  nameField: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('input#name'),
-
-  emailField: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('input#email'),
-
-  messageField: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('textarea#message'),
-
-  chatEmailError: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('#email-error'),
-
-  chatNameError: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('#name-error'),
-
-  submitField: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('button[data-hook="lcf-submit"]'),
-
-  formFeedback: () => chatBox.iframeSelector()
-            .its('0.contentDocument') 
-            .find('div[data-hook="lcf-thank-you"]')
+  chatButton: () => chatBox.iframeDoc().find('#minimized-chat'),
+  chatTextArea: () => chatBox.iframeDoc().find('textarea[aria-label="Type your message. Hit enter to submit."]'),
+  sendButton: () => chatBox.iframeDoc().find('button[data-hook="send-button"]'),
+  chatMessages: () => chatBox.iframeDoc().find('div[data-hook="chat-message"]'),
+  chatForm: () => chatBox.iframeDoc().find('form.zd18O'),
+  nameField: () => chatBox.iframeDoc().find('input#name'),
+  emailField: () => chatBox.iframeDoc().find('input#email'),
+  messageField: () =>chatBox.iframeDoc().find('textarea#message'),
+  chatEmailError: () => chatBox.iframeDoc().find('#email-error'),
+  chatNameError: () => chatBox.iframeDoc().find('#name-error'),
+  submitField: () => chatBox.iframeDoc().find('button[data-hook="lcf-submit"]'),
+  formFeedback: () =>  chatBox.iframeDoc().find('div[data-hook="lcf-thank-you"]')
 }
 
 
@@ -88,40 +54,20 @@ export const homePage = {
     wixButton: () => cy.get('#i71wwqnj > p:nth-child(2) > span > a'),
     mailToButton: () => cy.get('[href="mailto:info@mysite.com"]'),
     
-    iframeSelector:()=>cy.get('.nKphmK'),
-    checkInButton:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#search-widget #check-in'),
-    checkInValue:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#search-widget #check-in-value'),
-    checkOutButton:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#search-widget #check-out'),
-    checkOutValue:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#search-widget #check-out-value'),
-    adultsButtonIncrement:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#adults .up'),
-    adultsButtonDecrement:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#adults .down'),
-    adultValue: () => cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#adults .value'),
-    childrensButtonIncrement:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#children .up'),
-    childrenButtonDecrement:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#children .down'),
-    childrenValue: () => cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#children .value'),
-    searchButton:()=> cy.get('iframe.nKphmK[title="Wix Hotels"]')
-    .its('0.contentDocument')
-    .find('#search-widget > form > ul > li.search > button'),
+    iframeSelector:()=>cy.get('iframe.nKphmK[title="Wix Hotels"]'),
+    iframeDoc: ()=> homePage.iframeSelector().its('0.contentDocument'),
+
+    checkInButton:()=>homePage.iframeDoc().find('#search-widget #check-in'),
+    checkInValue:()=>homePage.iframeDoc().find('#search-widget #check-in-value'),
+    checkOutButton:()=>homePage.iframeDoc().find('#search-widget #check-out'),
+    checkOutValue:()=>homePage.iframeDoc().find('#search-widget #check-out-value'),
+    adultsButtonIncrement:()=>homePage.iframeDoc().find('#adults .up'),
+    adultsButtonDecrement:()=>homePage.iframeDoc().find('#adults .down'),
+    adultValue: () => homePage.iframeDoc().find('#adults .value'),
+    childrensButtonIncrement:()=>homePage.iframeDoc().find('#children .up'),
+    childrenButtonDecrement:()=>homePage.iframeDoc().find('#children .down'),
+    childrenValue: () => homePage.iframeDoc().find('#children .value'),
+    searchButton:()=> homePage.iframeDoc().find('#search-widget > form > ul > li.search > button'),
 
     // clickOnHomeAndAwayButton: () => cy.get("#i6ksxrtk > h1 > a").should('be.visible').click(),
     // clickOnHomeButton: () => cy.get("#i6kl732v0label").should('be.visible').click(),
@@ -139,7 +85,6 @@ export const homePage = {
       return buttonElement.invoke('css', 'color');  // Returns the color property
     },
 
-      // Verifică dacă widgetul de căutare este afișat
     setDataInCalendar:(checkInDate, checkOutDate) =>{
       homePage.checkInButton()
         .should('exist')
@@ -163,7 +108,7 @@ export const homePage = {
     },
 
 
-      tryToIncrement: (clicks) => {
+    tryToIncrement: (clicks) => {
         homePage.adultValue().invoke('text').then((currentValue) => {
           let currentVal = parseInt(currentValue); // Convertește valoarea la număr      
           const clickUntilMatch = () => {
@@ -181,10 +126,10 @@ export const homePage = {
           };
           clickUntilMatch();
         });
-      },
+    },
       
 
-      tryToDecrement:(clicks) => {
+    tryToDecrement:(clicks) => {
         homePage.adultValue().invoke('text').then((currentValue) => {
           let currentVal = parseInt(currentValue); // Convertește valoarea la număr
           const clickUntilMatch = () => {
@@ -202,10 +147,9 @@ export const homePage = {
           };
           clickUntilMatch();
         });
-      },
+    },
 
-  
-      tryToIncrementKids:(clicks) => {
+    tryToIncrementKids:(clicks) => {
         homePage.childrenValue().invoke('text').then((currentValue) => {
           let currentVal = parseInt(currentValue); // Convertește valoarea la număr
           const clickUntilMatch = () => {
@@ -223,7 +167,7 @@ export const homePage = {
           };
           clickUntilMatch();
         });
-      },
+    },
 
 
 };
@@ -231,50 +175,24 @@ export const homePage = {
 
 export const roomsPage = {
   iframeSelector:()=> cy.get('#i6klgqap_0 > .nKphmK'),
-  
-  checkInButton:()=> roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#check-in'),
-  checkInValue:()=>roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#check_in-value'),
-  checkOutButton:()=>roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#check-out'),
-  checkOutValue:()=>roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#check_out-value'),
-  adultsButtonIncrement:()=>roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#adults .up'),
-  adultsButtonDecrement:()=>roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#adults .down'),
-  adultValue: () => roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#adults .value'),
-  childrensButtonIncrement:()=>roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#children .up'),
-  childrenButtonDecrement:()=>roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#children .down'),
-  childrenValue: () => roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#children .value'),
-  searchButton: () => roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('form > ul > li.search-btn > button.search.s-button'),
-  resultBar:  ()=> roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('h2.s-title.resultbar'),
-  
-  roomsList:()=> roomsPage.iframeSelector()
-  .its('0.contentDocument')
-  .find('#content > div > div.content-body > div > ul > li'),
+  iframeDoc:()=> roomsPage.iframeSelector().its('0.contentDocument'),
 
-    // Verifică dacă widgetul de căutare este afișat
-  setDataInCalendar:(checkInDate, checkOutDate) =>{
+  checkInButton:()=> roomsPage.iframeDoc().find('#check-in'),
+  checkInValue:()=>roomsPage.iframeDoc().find('#check_in-value'),
+  checkOutButton:()=>roomsPage.iframeDoc().find('#check-out'),
+  checkOutValue:()=>roomsPage.iframeDoc().find('#check_out-value'),
+  adultsButtonIncrement:()=>roomsPage.iframeDoc().find('#adults .up'),
+  adultsButtonDecrement:()=>roomsPage.iframeDoc().find('#adults .down'),
+  adultValue: () => roomsPage.iframeDoc().find('#adults .value'),
+  childrensButtonIncrement:()=>roomsPage.iframeDoc().find('#children .up'),
+  childrenButtonDecrement:()=>roomsPage.iframeDoc().find('#children .down'),
+  childrenValue: () => roomsPage.iframeDoc().find('#children .value'),
+  searchButton: () => roomsPage.iframeDoc().find('form > ul > li.search-btn > button.search.s-button'),
+  resultBar:  ()=> roomsPage.iframeDoc().find('h2.s-title.resultbar'),
+  
+  roomsList:()=> roomsPage.iframeDoc().find('#content > div > div.content-body > div > ul > li'),
+
+    setDataInCalendar:(checkInDate, checkOutDate) =>{
     roomsPage.checkInButton()
       .should('exist')
       .click();
@@ -285,16 +203,12 @@ export const roomsPage = {
     roomsPage.checkInValue()
       .should('have.text', formattedCheckinDate);
 
-    // roomsPage.checkOutButton()
-    //   .should('exist')
-    //   .click();
-
     selectDateInIframe_rooms(checkOutDate,false);
 
     const formattedCheckoutDate = formatDateForSearch(checkOutDate);
     roomsPage.checkOutValue()
       .should('have.text', formattedCheckoutDate);
-  },
+    },
 
 
     tryToIncrement: (clicks) => {

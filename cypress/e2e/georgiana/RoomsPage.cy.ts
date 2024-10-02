@@ -129,7 +129,7 @@ describe("Rooms Page Test", () => {
       setDataInSearchWidget(checkInDate,checkOutDate,1,2);
     });
 
-    it('verify Search after search', () => {
+    it.only('verify Search after search', () => {
       const checkInDate = new Date(); 
       const checkOutDate = new Date(checkInDate); 
       checkOutDate.setDate(checkInDate.getDate() + 3); 
@@ -144,7 +144,7 @@ describe("Rooms Page Test", () => {
       setDataInSearchWidget(checkInDate1,checkOutDate1,2,0);
     });
 
-    it('verify clear after search', () => {
+    it.only('verify clear after search', () => {
       const checkInDate = new Date(); 
       const checkOutDate = new Date(checkInDate); 
       checkOutDate.setDate(checkInDate.getDate() + 3); 
@@ -165,7 +165,7 @@ describe("Rooms Page Test", () => {
     });
 
 
-    it('Test all room images and URLs', () => {
+    it.only('Test all room images and URLs', () => {
       cy.wait(10000);
       const defaultImage = "https://static.wixstatic.com/media/fde015_cb4dcccb4258499a894623f5282baa98.png/v1/fill/w_240,h_170,q_85,usm_0.66_1.00_0.01/fde015_cb4dcccb4258499a894623f5282baa98.png";
       const results: boolean[] = []; // Array to store results
@@ -235,7 +235,7 @@ describe("Rooms Page Test", () => {
            
     }
    
-    it('Verify more info button', () => {
+    it.only('Verify more info button', () => {
       verifyLinksAndButtons("MoreInfo")
     });
 

@@ -16,7 +16,7 @@ describe("Test Contact Page", () => {
       email: "jo_M@test.com", 
       phone: "0897546834", 
       comm: generateRandomWords(32), 
-      testName: "RequiredFieldWarning_Name", 
+      testName: "Required Field Warning No Name", 
       expectedErrorMessage: "Please fill out this field.", 
       fieldFunction: () => contactPage.nameField()
     },
@@ -25,7 +25,7 @@ describe("Test Contact Page", () => {
       email: "\n", 
       phone: "04782783673", 
       comm: generateRandomWords(21), 
-      testName: "RequiredFieldWarning_Email", 
+      testName: "Required Field Warning No Email", 
       expectedErrorMessage: "Please fill out this field.", 
       fieldFunction: () => contactPage.emailField()
     },
@@ -34,7 +34,7 @@ describe("Test Contact Page", () => {
       email: "jo_M@test.com", 
       phone: "\n", 
       comm: generateRandomWords(21), 
-      testName: "RequiredFieldWarning_Phone", 
+      testName: "Required Field Warning No Phone", 
       expectedErrorMessage: "Please fill out this field.", 
       fieldFunction: () => contactPage.phoneField()
     },
@@ -43,7 +43,7 @@ describe("Test Contact Page", () => {
       email: "marcus.andr@test.com", 
       phone: "0982711678", 
       comm: "", 
-      testName: "RequiredFieldWarning_Message", 
+      testName: "Required Field Warning No Message", 
       expectedErrorMessage: "Please fill out this field.", 
       fieldFunction: () => contactPage.commentField()
     },
@@ -52,7 +52,7 @@ describe("Test Contact Page", () => {
       email: "jo_Mestom", 
       phone: "0897546834", 
       comm: generateRandomWords(32), 
-      testName: "validateFieldWarning_InvalidEmail", 
+      testName: "validate Field Warning Invalid Email", 
       expectedErrorMessage: "Please include an '@' in the email address. 'jo_Mestom' is missing an '@'.", 
       fieldFunction: () => contactPage.emailField()
     },
@@ -61,7 +61,7 @@ describe("Test Contact Page", () => {
       email: "luck_Stark@test.com", 
       phone: "04782783673", 
       comm: generateRandomWords(21), 
-      testName: "ValidData", 
+      testName: "Valid Data", 
       expectedErrorMessage: "", 
       fieldFunction: null // No validation for valid data
     }
@@ -69,15 +69,15 @@ describe("Test Contact Page", () => {
 
   values.forEach(element => {
     it(`Test: ${element.testName}`, () => {
-      cy.contains("CONTACT").first().should("be.visible").click()
-      cy.url().should("eql", "https://ancabota09.wixsite.com/intern/contact")
       cy.wait(3000)
       contactPage.nameField().clear().type(element.name)
       contactPage.emailField().clear().type(element.email)
       contactPage.phoneField().clear().type(element.phone)
       if(element.comm)
         contactPage.commentField().clear().type(element.comm)
+
       contactPage.submitField().click()
+
         // Verifică dacă așteptăm un mesaj de eroare
         if (element.expectedErrorMessage && element.fieldFunction) {
             element.fieldFunction().then($field => {
@@ -94,23 +94,7 @@ describe("Test Contact Page", () => {
     })
   });
 
-  it(`Test Paragraph`, () => {
-
-    contactPage.paragraphElement()    .should('be.visible')
-    .invoke('text')
-    .then((paragraph) => {
-      const normalizedParagraph = paragraph.replace(/\s+/g, ' ').trim();
-      
-      const expectedText1 = "I'm a paragraph. Click here to add your own text and edit me. It’s easy. Just click “Edit Text” or double click me to add your own content and make changes to the font. Feel free to drag and drop me anywhere you like on your page. I’m a great place for you to tell a story and let your users know a little more about you.";
-      const expectedText2 = "I'm a paragraph. Click here to add your own text and edit me. I’m a great place for you to tell a story and let your users know a little more about you.";
-
-      // Verifică dacă paragraful este diferit de expectedText1 și expectedText2
-      expect(normalizedParagraph).to.not.equal(expectedText1);
-      expect(normalizedParagraph).to.not.equal(expectedText2);
-    }); 
-  });
-
-  it(`Test Paragraph`, () => {
+  it(`Test: Paragraph`, () => {
 
     contactPage.paragraphElement().should('be.visible')
     .invoke('text')
@@ -126,12 +110,14 @@ describe("Test Contact Page", () => {
     }); 
   });
 
-  it('validate that confirmation message is initially hidden', () => {
+  it('Test: validate that confirmation message is initially hidden', () => {
     contactPage.confirmationMessage().should('be.visible')
     .and('not.contain.text', 'Thanks for submitting!');
     }); 
 
-  it("Map Fullscreen", () => {
+
+  it("Test: Map Fullscreen", () => {
+    cy.wait(3000)
     cy.get('iframe[title="Google Maps"]')
         .should('have.attr', 'allowfullscreen');
     cy.get('iframe[title="Google Maps"]').its('0.contentDocument').find('#map_canvas > div > div.gm-style > div:nth-child(8) > button').should('exist').click()

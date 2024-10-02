@@ -96,7 +96,7 @@ describe("Home Page Test", () => {
           });
         });
     
-    it('Adults Button decrement', () => {
+    it.only('Adults Button decrement', () => {
       cy.wait(10000)
       homePage.tryToDecrement(1);
       homePage.adultValue()
@@ -183,7 +183,7 @@ describe("Home Page Test", () => {
 
 
     // Apelarea funcției în test
-    it.only('Search With 8 Adults', () => {
+    it('Search With 8 Adults', () => {
       const checkInDate = new Date(); 
       const checkOutDate = new Date(checkInDate); 
       checkOutDate.setDate(checkInDate.getDate() + 3); 
@@ -192,7 +192,7 @@ describe("Home Page Test", () => {
     });
 
     // Apelarea funcției în test
-    it.only('Search With 2 Kids', () => {
+    it('Search With 2 Kids', () => {
       const checkInDate = new Date(); 
       const checkOutDate = new Date(checkInDate); 
       checkOutDate.setDate(checkInDate.getDate() + 3); 

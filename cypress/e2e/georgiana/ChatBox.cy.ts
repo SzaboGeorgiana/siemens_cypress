@@ -7,7 +7,7 @@ describe("Test Chat Functionality", () => {
   });
 
 
-  const invalidValues = [
+  const values = [
     { name: "\n", email: "sara@mail.com", msg: "help", expectedErrorMessage: 'Make sure to add your name.',nameV:"no name",selector: '#name-error' },
     { name: "Mara", email: "\n", msg: "help 3", expectedErrorMessage: 'Make sure to add your email.',nameV:"no email", selector:'#email-error' },
     { name: "John", email: "invalidEmail", msg: "booking", expectedErrorMessage: "Enter a valid email address." ,nameV:"invalid email",selector: '#email-error'},
@@ -31,14 +31,14 @@ describe("Test Chat Functionality", () => {
         cy.get('#comp-jr4sqg2g > .nKphmK')
             .its('0.contentDocument') 
             .find('div[data-hook="expanded-widget"]') 
-            .should('be.visible') // Check if the chat widget is visible
+            .should('be.visible') 
             .and('contain', 'Online')
-            .and('contain', 'Intern'); // Check if operator Intern is online
+            .and('contain', 'Intern'); 
     });
 
   
-  invalidValues.forEach((element) => {
-    it(`chat form test with: ${element.nameV}`, () => {
+  values.forEach((element) => {
+    it.only(`chat form test with: ${element.nameV}`, () => {
         cy.wait(10000);
       chatBox.chatButton()
             .should('be.visible') 
