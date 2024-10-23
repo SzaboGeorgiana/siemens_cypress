@@ -43,39 +43,58 @@ beforeEach(() => {
   //footer social media buttons
 
   it("Facebook Button Test", () => {
-    //homePage.facebookButton().should("have.prop", "target", "_blank").invoke('removeAttr', 'target', '_self').click({ force: true })
-    //should("exist").invoke("removeAttr", "target").click({ force: true })
-    //cy.url({ timeout: 10000 }).should("eq", "https://www.facebook.com/wix");
     homePage.facebookButton()
       .should("be.visible")
-      .invoke('attr', 'href')
-      .should('equal', 'http://www.facebook.com/wix')
+      .then(($link) => {
+        $link.removeAttr('target')
+        cy.wrap($link).click()
+        cy.wait(2000)
+        cy.url().should('not.eq', 'https://ancabota09.wixsite.com/intern') // Ensure URL has changed
+        cy.url().should('include', 'https://www.facebook.com')
+        cy.url().should('include', 'wix');
+      })
+    // homePage.facebookButton()
+    //   .should("be.visible")
+    //   .invoke('attr', 'href')
+    //   .should('equal', 'http://www.facebook.com/wix')
   })
 
   it("X Button Test", () => {
     homePage.xButton()
-      .should("be.visible")
-      .invoke('attr', 'href')
-      .should('equal', 'https://x.com/wix')
+    .should("be.visible")
+    .then(($link) => {
+      $link.removeAttr('target')
+      cy.wrap($link).click()
+      cy.wait(2000)
+      cy.url().should('not.eq', 'https://ancabota09.wixsite.com/intern')
+      cy.url().should('include', 'https://x.com/wix');
+    })
   })
 
   it("Pinterest Button Test", () => {
     homePage.pinterestButton()
-      .should("be.visible")
-      .invoke('attr', 'href')
-      .should('equal', 'http://pinterest.com/wixcom/')
+    .should("be.visible")
+    .then(($link) => {
+      $link.removeAttr('target')
+      cy.wrap($link).click();
+    });
+    cy.wait(2000);
+    cy.url().should('include', 'https://www.pinterest.com/wixcom/');
   })
 
   //footer buttons
 
   it("Wix Page Button Test", () => {
-    // homePage.wixPageButton().invoke('removeAttr', 'target').click()
-    // cy.url({ timeout: 10000 }).should('equal', 'https://www.wix.com/?utm_campaign=vir_created_with')
-    // cy.go('back');
     homePage.wixPageButton()
       .should("be.visible")
-      .invoke('attr', 'href')
-      .should('equal', 'http://wix.com/?utm_campaign=vir_created_with');
+      .then(($link) => {
+        $link.removeAttr('target')
+        cy.wrap($link).click()
+        cy.wait(2000)
+        cy.url().should('not.eq', 'https://ancabota09.wixsite.com/intern')
+        cy.url().should('include', 'https://www.wix.com/?utm_campaign=vir_created_with');
+      })
+
   })
 
   it("Contact Mail Button Test", () => {

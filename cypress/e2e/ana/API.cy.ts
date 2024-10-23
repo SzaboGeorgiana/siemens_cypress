@@ -176,7 +176,7 @@ beforeEach(() => {
     expect(response.support.text).to.eq("To keep ReqRes free, contributions towards server costs are appreciated!");
   }
   });
-});
+  })
 
   it("GET Single User Test", () => {
     cy.intercept('GET', '/api/users/2', {
@@ -211,7 +211,7 @@ beforeEach(() => {
     });
   })
 
-  // it.only('Get User Test0', ()=>{
+  // it('Get User Test0', ()=>{
   //   cy.request({
   //     method: 'GET',
   //     url: 'https://reqres.in/api/users/2'
@@ -227,7 +227,7 @@ beforeEach(() => {
   //   })
   // })
 
-  ///?????
+
   it("GET One User using interception Test", () => {
     // Intercepting GET request to /api/users/2
     cy.intercept({
@@ -235,7 +235,7 @@ beforeEach(() => {
       url: '/api/users/2'
     }).as('getSingleUser'); // Alias for the request
 
-    // Visit the main page (if necessary)
+    // Visit the main page 
     cy.visit('https://reqres.in/');
 
     //SAU
@@ -305,6 +305,33 @@ beforeEach(() => {
       }
     })
   })
+////changed status code
+  it("GET Single User Not Found (404) with changed response (200)", () => {
+    // Intercepting GET request to /api/users/23
+    cy.intercept({
+      method: 'GET',
+      url: '/api/users/23'
+
+    },
+    [
+    {
+      statusCode: 200, // Force the response status code to be 200
+      body: {} 
+    }
+    ]
+ 
+  ).as('getUserNotFound'); 
+
+    cy.visit('https://reqres.in/');
+    cy.get('li[data-id="users-single-not-found"] a').click(); 
+
+    cy.wait('@getUserNotFound').then((interception) => {
+      if (interception.response) {
+        expect(interception.response.statusCode).to.eq(404);
+        expect(interception.response.body).to.be.empty;
+      }
+    });
+  })
 
   it("GET Single Resource using Request Test", () => {
     cy.intercept('GET', '/api/unknown/2', {
@@ -338,7 +365,7 @@ beforeEach(() => {
         "text": "To keep ReqRes free, contributions towards server costs are appreciated!"
       });
     });
-  });
+  })
 
   it("GET Single Resource using Intercept Test", () => {
     cy.intercept('GET', '/api/unknown/2', {
@@ -382,8 +409,53 @@ beforeEach(() => {
     }
   })
 })
+////changed name and year
+it("GET Single Resource using Intercept Test with changed response", () => {
+  cy.intercept('GET', '/api/unknown/2', {
+    statusCode: 200,
+    body: {
+      "data": {
+        "id": 2,
+        "name": "cerulean blue",
+        "year": 2020,
+        "color": "#007BA7",
+        "pantone_value": "15-4020",
+        "new_field": "This is a new field"
+      },
+      "support": {
+        "url": "https://reqres.in/#support-heading",
+        "text": "This response has been modified for testing purposes."
+      }
+    }
+  }).as('getSingleResource');
 
-  it("GET List Of Resource using Request Test", () => {
+  cy.visit('https://reqres.in/');
+  cy.get('li[data-id="unknown-single"] a').click();
+  cy.wait('@getSingleResource').then((interception) => {
+    if (interception.response) {
+      const responseBody = interception.response.body;
+      // Assert the status code
+      expect(interception.response.statusCode).to.eq(200);
+      // Assert the changed user data
+      expect(responseBody.data).to.deep.equal({
+        "id": 2,
+        "name": "cerulean blue",
+        "year": 2020,
+        "color": "#007BA7",
+        "pantone_value": "15-4020",
+        "new_field": "This is a new field"
+      });
+      // Assert the changed support data
+      expect(responseBody.support).to.deep.equal({
+        "url": "https://reqres.in/#support-heading",
+        "text": "This response has been modified for testing purposes."
+      });
+
+    }
+  })
+})
+
+it("GET List Of Resource using Request Test", () => {
     cy.intercept('GET', '/api/unknown').as('getListOfResource');
   
     cy.request({
@@ -447,9 +519,9 @@ beforeEach(() => {
         text: "To keep ReqRes free, contributions towards server costs are appreciated!"
       });
     });
-  });
+});
 
-  it("GET List Of Resource using Intercept Test", () => {
+it("GET List Of Resource using Intercept Test", () => {
     cy.intercept('GET', '/api/unknown', {
       statusCode: 200,
       body: {
@@ -535,7 +607,7 @@ beforeEach(() => {
         expect(response.support.text).to.eq("To keep ReqRes free, contributions towards server costs are appreciated!");
       }
     });
-  });
+});
 
 it("POST User using Request Test", () => {
   cy.intercept('POST', '/api/users').as('postUser');
@@ -622,6 +694,56 @@ it("PUT User using Intercept Test",() => {
  
   })
 })
+////added error message
+it("PUT User Not Found (404)", () => {
+  cy.intercept({
+    method: 'PUT',
+    url: '/api/users/2',
+  }, {
+    statusCode: 404,
+    body: {
+      error: "User not found"
+    }
+  }).as('PutUserNotFound');
+
+  cy.visit('https://reqres.in/');
+  cy.get('li[data-id="put"] a').click();
+
+  cy.wait('@PutUserNotFound').then((interception) => {
+    if (interception.response) {
+      expect(interception.response.statusCode).to.eq(404);
+      const responseBody = interception.response.body;
+      expect(responseBody).to.have.property('error', 'User not found');
+    }
+  })
+})
+//added parrial content message
+it("PUT User with Partial Content (206)", () => {
+  cy.intercept({
+    method: 'PUT',
+    url: '/api/users/2',
+  }, {
+    statusCode: 206,
+    body: {
+      message: "Partial update successful",
+      updatedFields: {
+        job: "zion resident"
+      }
+    }
+  }).as('PutUserPartialContent');
+
+  cy.visit('https://reqres.in/');
+  cy.get('li[data-id="put"] a').click();
+
+  cy.wait('@PutUserPartialContent').then((interception) => {
+    if (interception.response) {
+      expect(interception.response.statusCode).to.eq(206);
+      const responseBody = interception.response.body;
+      expect(responseBody).to.have.property('message', 'Partial update successful');
+      expect(responseBody.updatedFields).to.deep.equal({ job: "zion resident" });
+    }
+  })
+})
  
 it("DELETE User using Request Test", () => {
   cy.intercept('DELETE', '/api/users/2').as('deleteUser');
@@ -648,6 +770,82 @@ it("DELETE User using Intercept Test", () => {
       if (interception.response) {
         expect(interception.response.statusCode).to.eq(204);
         expect(interception.response.body).to.eq("");
+      }
+    }) 
+})
+////added message and reason
+it("DELETE User using Intercept(204) with changed response(403) Test", () => {
+  cy.intercept(
+    {
+      method: 'DELETE',
+      url: '/api/users/2',
+    },
+    
+    {
+      statusCode: 403, // Force the response status code to be 403
+      body: {
+        message: "User deletion is forbidden.",
+        reason: "You do not have permission to delete this user."
+      } 
+    }
+    
+  ).as('DeleteUser');
+
+    cy.visit('https://reqres.in/');
+    cy.get('li[data-id="delete"] a').click();
+
+    cy.wait('@DeleteUser').then((interception) => {
+      if (interception.response) {
+        expect(interception.response.statusCode).to.eq(204);
+        expect(interception.response.body).to.eq("");
+      }
+    }) 
+})
+
+it("DELETE User using Intercept(204) with changed response(403) Test 2", () => {
+  //include user data
+  cy.intercept(
+    {
+      method: 'DELETE',
+      url: '/api/users/2',
+    },
+    
+    {
+      statusCode: 403, // Force the response status code to be 403
+      body: {
+        message: "User deletion is forbidden.",
+        user: {
+          id: 2,
+          email: "janet.weaver@reqres.in",
+          first_name: "Janet",
+          last_name: "Weaver",
+          status: "Active"
+        },
+      reason: "This user is currently active and cannot be deleted." 
+      }
+    }
+    
+  ).as('DeleteUser');
+
+    cy.visit('https://reqres.in/');
+    cy.get('li[data-id="delete"] a').click();
+
+    cy.wait('@DeleteUser').then((interception) => {
+      if (interception.response) {
+        
+        // expect(interception.response.body).to.eq("");
+
+        const responseBody = interception.response.body;
+        expect(responseBody.message).to.eq("User deletion is forbidden.");
+        expect(responseBody.user).to.deep.include({
+          id: 2,
+          email: "janet.weaver@reqres.in",
+          first_name: "Janet",
+          last_name: "Weaver",
+          status: "Active"
+        });
+        expect(responseBody.reason).to.eq("This user is currently active and cannot be deleted.");
+        expect(interception.response.statusCode).to.eq(204);
       }
     }) 
 })
@@ -686,6 +884,56 @@ it("POST Register Successful using Intercept Test", () => {
       expect(responseBody).to.have.property('token','QpwL5tke4Pnpja7X4');
     }
   });
+})
+
+it("POST Register Successful using Intercept with changed response", () => {
+  cy.intercept({
+    method: 'POST',
+    url: '/api/register'
+  },
+  {
+    statusCode: 200,
+    body: {
+      id: 99,  
+      token: 'NewGeneratedToken12345',
+      extraInfo: 'User registered successfully'
+    }
+  }).as('PostRegister');
+ 
+  cy.visit('https://reqres.in/');
+  cy.get('li[data-id="register-successful"] a').click();
+  cy.wait('@PostRegister').then((interception) => {
+    if (interception.response) {
+      expect(interception.response.statusCode).to.eq(200);
+      const responseBody = interception.response.body;
+      expect(responseBody).to.have.property('id', 99); 
+      expect(responseBody).to.have.property('token', 'NewGeneratedToken12345');
+      expect(responseBody).to.have.property('extraInfo', 'User registered successfully'); 
+    }
+  })
+})
+////
+it("POST Register with Bad Request(400) Intercept Test", () => {
+  cy.intercept({
+    method: 'POST',
+    url: '/api/register'
+  },
+  {
+    statusCode: 400,
+    body: {
+      error: "Missing email or username"
+    }
+  }).as('PostRegister');
+ 
+    cy.visit('https://reqres.in/');
+    cy.get('li[data-id="register-successful"] a').click();
+    cy.wait('@PostRegister').then((interception) => {
+    if (interception.response) {
+      expect(interception.response.statusCode).to.eq(400);
+      const responseBody = interception.response.body;
+      expect(responseBody).to.have.property('error', "Missing email or username");
+    }
+  })
 })
 
 it("POST Register Unsuccessful using Request Test", () => {
@@ -774,7 +1022,7 @@ it("POST Login Unsuccessful using Request Test", () => {
   });
 })
 
-it.only("POST Login Unsuccessful using Intercept Test", () => {
+it("POST Login Unsuccessful using Intercept Test", () => {
   cy.intercept({
     method: 'POST',
     url: '/api/login'
@@ -789,7 +1037,55 @@ it.only("POST Login Unsuccessful using Intercept Test", () => {
       const responseBody = interception.response.body;
       expect(responseBody).to.have.property('error','Missing password');
     }
-  });
+  })
+})
+
+it("POST Login Unsuccessful with Incorrect Password", () => {
+  cy.intercept({
+    method: 'POST',
+    url: '/api/login'
+  },
+  {
+    statusCode: 401,
+    body: {
+      error: "Incorrect password"
+    }
+  }).as('PostLoginUnsuccessful');
+ 
+  cy.visit('https://reqres.in/');
+  cy.get('li[data-id="login-unsuccessful"] a').click();
+
+  cy.wait('@PostLoginUnsuccessful').then((interception) => {
+    if (interception.response) {
+      expect(interception.response.statusCode).to.eq(401);
+      const responseBody = interception.response.body;
+      expect(responseBody).to.have.property('error', 'Incorrect password');
+    }
+  })
+})
+////
+it("POST Login Unsuccessful with Server Error (500)", () => {
+  cy.intercept({
+    method: 'POST',
+    url: '/api/login'
+  },
+  {
+    statusCode: 500,
+    body: {
+      error: "Internal server error"
+    }
+  }).as('PostLoginUnsuccessful');
+ 
+  cy.visit('https://reqres.in/');
+  cy.get('li[data-id="login-unsuccessful"] a').click();
+
+  cy.wait('@PostLoginUnsuccessful').then((interception) => {
+    if (interception.response) {
+      expect(interception.response.statusCode).to.eq(500);
+      const responseBody = interception.response.body;
+      expect(responseBody).to.have.property('error', 'Internal server error');
+    }
+  })
 })
 
 it("GET Delayed Response using Request Test", () => {
