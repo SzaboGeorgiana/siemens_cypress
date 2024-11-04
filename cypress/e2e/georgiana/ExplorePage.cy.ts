@@ -43,6 +43,7 @@ const images = [
   { element: explorePage.goldenGateImage, name: "Golden Gate Bridge", expectedSrc: "9c608a_66f0495affeb412ba01b0d9f0bd3dd6b.jpg" }
 ];
 
+
 images.forEach((image) => {
   it(`Test: ${image.name} image`, () => {
     image.element()
