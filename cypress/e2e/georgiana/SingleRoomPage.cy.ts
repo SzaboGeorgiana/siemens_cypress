@@ -13,6 +13,7 @@ describe("Standard Suite Page Test", () => {
     });
 
 
+    
     it('Adults Button increment', () => {
       cy.wait(10000)
       roomsPage.tryToIncrement(6);

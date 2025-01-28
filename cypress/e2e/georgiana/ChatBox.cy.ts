@@ -7,6 +7,7 @@ describe("Test Chat Functionality", () => {
   });
 
 
+
   const values = [
     { name: "\n", email: "sara@mail.com", msg: "help", expectedErrorMessage: 'Make sure to add your name.',nameV:"no name",selector: '#name-error' },
     { name: "Mara", email: "\n", msg: "help 3", expectedErrorMessage: 'Make sure to add your email.',nameV:"no email", selector:'#email-error' },

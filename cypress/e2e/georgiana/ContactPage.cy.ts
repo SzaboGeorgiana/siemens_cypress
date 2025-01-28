@@ -94,6 +94,7 @@ describe("Test Contact Page", () => {
     })
   });
 
+  
   it(`Test: Paragraph`, () => {
 
     contactPage.paragraphElement().should('be.visible')

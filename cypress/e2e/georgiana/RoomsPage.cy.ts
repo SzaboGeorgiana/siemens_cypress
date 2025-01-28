@@ -92,6 +92,7 @@ describe("Rooms Page Test", () => {
               .invoke('text')
               .then((childrenFinalValue) => {
               
+                
                 expect(childrenFinalValue).to.equal(kidsNb.toString());
 
                 roomsPage.searchButton()

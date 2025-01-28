@@ -44,6 +44,7 @@ const images = [
 ];
 
 
+
 images.forEach((image) => {
   it(`Test: ${image.name} image`, () => {
     image.element()

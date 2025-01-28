@@ -142,6 +142,7 @@ describe("Home Page Test", () => {
     //   });
 
 
+    
 
     // Funcția separată completarea datelor in search widget
     function setDataInSearchWidget(checkInDate,checkOutDate,adultsNb,kidsNb) {
